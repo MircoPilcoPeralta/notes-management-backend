@@ -1,5 +1,6 @@
 package com.mirco.notes.notes.model.entitites;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -37,6 +38,7 @@ public class Label {
 
     @ManyToOne
     @JoinColumn(name = "system_user_id", nullable = false)
+    @JsonIgnore
     private SystemUser systemUser;
 
     @ManyToMany
@@ -45,6 +47,7 @@ public class Label {
         joinColumns = @JoinColumn(name = "id_label"),
         inverseJoinColumns = @JoinColumn(name = "id_note")
     )
+    @JsonIgnore
     private Set<Note> notes;
 
     @Column(name = "creation_date", nullable = false)

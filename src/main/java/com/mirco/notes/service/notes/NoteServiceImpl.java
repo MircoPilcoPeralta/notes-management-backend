@@ -22,16 +22,13 @@ public class NoteServiceImpl implements INoteService{
 
     @Override
     public List<Note> getAllNotesFromUserById(Long userId) {
-        return iNoteRepository.findAllBySystemUserId(userId);
+        final SystemUser systemUser = getSystemUserById(userId);
+        return iNoteRepository.findAllBySystemUserId(systemUser.getId());
     }
 
     @Override
     public Note createNote(String title, String content, Long userId) {
-        final SystemUser systemUser = iSystemUserService.getSystemUserById(userId);
-
-        if (systemUser == null) {
-            throw new UserNotRegisteredException();
-        }
+        final SystemUser systemUser = getSystemUserById(userId);
 
         final Note note = Note.builder()
                 .title(title)
@@ -44,5 +41,13 @@ public class NoteServiceImpl implements INoteService{
         return note;
     }
 
+    private SystemUser getSystemUserById(Long userId) {
+        final SystemUser systemUser = iSystemUserService.getSystemUserById(userId);
+
+        if (systemUser == null) {
+            throw new UserNotRegisteredException();
+        }
+        return systemUser;
+    }
 
 }

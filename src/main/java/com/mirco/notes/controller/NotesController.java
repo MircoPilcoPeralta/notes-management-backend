@@ -6,6 +6,8 @@ import com.mirco.notes.service.notes.INoteService;
 import com.mirco.shared.model.response.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,20 @@ public class NotesController {
 
     public NotesController(INoteService noteService) {
         this.noteService = noteService;
+    }
+
+
+    @GetMapping("/users/{userId}")
+    public ResponseEntity<StandardResponse> getAllNotesFromUserById(final @PathVariable("userId") Long userId) {
+        final List<Note> notes = noteService.getAllNotesFromUserById(userId);
+
+        final StandardResponse standardResponse = StandardResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Notes retrieved successfully")
+                .data(notes)
+                .build();
+
+        return ResponseEntity.ok(standardResponse);
     }
 
      @PostMapping
