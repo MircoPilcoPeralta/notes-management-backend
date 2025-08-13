@@ -40,8 +40,6 @@ public class SystemUser {
     @Column(nullable = false, length = 255)
     private String password;
 
-    // todo ver si es necesario el ALL
-    // no puedo crear un usuario con notas
     @OneToMany(mappedBy = "systemUser", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JsonIgnore
     private List<Label> labels;
