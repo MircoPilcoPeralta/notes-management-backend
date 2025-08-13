@@ -13,4 +13,14 @@ public interface INoteService {
      */
     List<Note> getAllNotesFromUserById(Long userId);
 
+    /**
+     * Creates a new note for a registered user.
+     *
+     * @param title   The title of the note.
+     * @param content The content of the note.
+     * @param userId  The ID of the user creating the note.
+     * @return The created Note object.
+     */
+    Note createNote(String title, String content, Long userId);
+
 }

@@ -13,6 +13,8 @@ import jakarta.persistence.PreUpdate;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -25,6 +27,8 @@ import java.util.Set;
 @Getter
 @Setter
 @NoArgsConstructor
+@Builder
+@AllArgsConstructor
 public class Note {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,7 +41,7 @@ public class Note {
     private String content;
 
     @Column(name = "is_archived", nullable = false)
-    private Boolean isArchived = false;
+    private Boolean isArchived;
 
     @ManyToOne
     @JoinColumn(name = "system_user_id", nullable = false)
@@ -60,6 +64,7 @@ public class Note {
 
     @PrePersist
     public void prePersistEntity() {
+        isArchived = false;
         creationDate = new Date();
         lastModificationDate = new Date();
     }
