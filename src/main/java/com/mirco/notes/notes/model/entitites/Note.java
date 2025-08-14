@@ -50,11 +50,6 @@ public class Note {
     @JsonIgnore
     private SystemUser systemUser;
 
-    @ManyToOne
-    @JoinColumn(name = "label_id")
-    @JsonIgnore
-    private Label label;
-
     @ManyToMany
     @JoinTable(
             name = "label_note",

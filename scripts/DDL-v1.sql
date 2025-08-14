@@ -32,7 +32,6 @@ CREATE TABLE note(
     title VARCHAR(200) NOT NULL,
     content TEXT NOT NULL,
     system_user_id BIGINT NOT NULL REFERENCES system_user(id),
-    label_id BIGINT REFERENCES label(id) REFERENCES note(id),
     is_archived BOOLEAN NOT NULL DEFAULT FALSE,
     creation_date TIMESTAMP NOT NULL,
     last_modification_date TIMESTAMP NOT NULL
