@@ -9,6 +9,7 @@ import com.mirco.shared.model.response.StandardResponse;
 import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -30,6 +31,7 @@ public class NotesController {
 
     @GetMapping("/users/{userId}")
     public ResponseEntity<StandardResponse<List<NoteResponse>>> getAllNotesFromUserById(
+            @Validated
             @Min(value = 1, message = "User ID must be a positive number")
             @PathVariable("userId") final Long userId) {
         final List<Note> notes = noteService.getAllNotesFromUserById(userId);
@@ -61,7 +63,10 @@ public class NotesController {
     }
 
     @GetMapping("/{noteId}")
-    public ResponseEntity<StandardResponse<NoteResponse>> getNoteById(final @PathVariable("noteId") Long noteId) {
+    public ResponseEntity<StandardResponse<NoteResponse>> getNoteById(
+            @Validated
+            @Min(value = 1, message = "note ID must be a positive number")
+            @PathVariable("noteId") final Long noteId) {
         final Note note = noteService.getNoteById(noteId);
 
         final NoteResponse noteResponse = generateNoteResponse(note);

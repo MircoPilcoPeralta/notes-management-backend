@@ -23,8 +23,8 @@ public class NotesExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
-    public ResponseEntity<StandardResponse> handleNoteNotFoundException(MethodArgumentTypeMismatchException ex) {
+    @ExceptionHandler(NoteNotFoundException.class)
+    public ResponseEntity<StandardResponse> handleNoteNotFoundException(NoteNotFoundException ex) {
         StandardResponse response = StandardResponse.builder()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .message(ex.getMessage())
@@ -34,15 +34,15 @@ public class NotesExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-    @ExceptionHandler(NoteNotFoundException.class)
-    public ResponseEntity<StandardResponse> handleNoteNotFoundException(NoteNotFoundException ex) {
+    @ExceptionHandler(MethodArgumentTypeMismatchException.class)
+    public ResponseEntity<StandardResponse> handleNoteNotFoundException(MethodArgumentTypeMismatchException ex) {
         StandardResponse response = StandardResponse.builder()
                 .statusCode(HttpStatus.BAD_REQUEST.value())
-                .message(ex.getMessage())
+                .message("Value of: '" + ex.getName() + "' have be of type: '"+ ex.getRequiredType().getSimpleName()+"'")
                 .data(null)
                 .build();
 
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
 }
