@@ -2,6 +2,7 @@ package com.mirco.notes.label.service;
 
 import com.mirco.notes.label.model.entities.Label;
 import com.mirco.notes.label.model.repository.ILabelRepository;
+import com.mirco.notes.label.model.request.CreateLabelRequest;
 import com.mirco.notes.note.model.entitites.SystemUser;
 import com.mirco.notes.note.service.user.ISystemUserService;
 import com.mirco.notes.shared.model.exceptions.UserNotRegisteredException;
@@ -30,6 +31,19 @@ public class LabelServiceImpl implements ILabelService {
     public Set<Label> getAllLabelsByUserId(Long userId) {
         final SystemUser systemUser = getSystemUserById(userId);
         return iLabelRepository.findAllBySystemUserId(systemUser.getId());
+    }
+
+    @Override
+    public Label createLabel(CreateLabelRequest createLabelRequest) {
+        final SystemUser systemUser = getSystemUserById(createLabelRequest.systemUserId());
+        final Label newLabel = Label.builder()
+                .name(createLabelRequest.name())
+                .systemUser(systemUser)
+                .build();
+
+        iLabelRepository.save(newLabel);
+
+        return newLabel;
     }
 
 

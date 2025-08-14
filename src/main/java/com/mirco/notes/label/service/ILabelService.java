@@ -1,6 +1,7 @@
 package com.mirco.notes.label.service;
 
 import com.mirco.notes.label.model.entities.Label;
+import com.mirco.notes.label.model.request.CreateLabelRequest;
 
 import java.util.Set;
 
@@ -21,4 +22,14 @@ public interface ILabelService {
      * @return a set of labels created by the user.
      */
     Set<Label> getAllLabelsByUserId(Long userId);
+
+
+    /**
+     * Method to create a new label.
+     *
+     * @param createLabelRequest the request containing label creation details
+     * @return the created label
+     */
+    Label createLabel(CreateLabelRequest createLabelRequest);
+
 }

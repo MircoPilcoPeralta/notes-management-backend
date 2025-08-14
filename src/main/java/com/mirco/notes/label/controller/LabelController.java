@@ -2,6 +2,7 @@ package com.mirco.notes.label.controller;
 
 
 import com.mirco.notes.label.model.entities.Label;
+import com.mirco.notes.label.model.request.CreateLabelRequest;
 import com.mirco.notes.label.model.response.LabelResponse;
 import com.mirco.notes.label.service.ILabelService;
 import com.mirco.notes.shared.model.response.StandardResponse;
@@ -11,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -45,6 +48,31 @@ public class LabelController {
 
         return ResponseEntity.ok(response);
     }
+
+
+    @PostMapping()
+    public ResponseEntity<StandardResponse<LabelResponse>> createLabel(
+            @Validated
+            @RequestBody
+            CreateLabelRequest createLabelRequest) {
+
+        Label createdLabel = iLabelService.createLabel(createLabelRequest);
+
+        LabelResponse labelResponse = LabelResponse.builder()
+                .id(createdLabel.getId())
+                .name(createdLabel.getName())
+                .build();
+
+        StandardResponse<LabelResponse> response = StandardResponse.<LabelResponse>builder()
+                .statusCode(HttpStatus.CREATED.value())
+                .message("Label created successfully")
+                .data(labelResponse)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+
 
     private static List<LabelResponse> generateLabelListResponse(Set<Label> labelsFromUser) {
         return labelsFromUser.stream().map(
