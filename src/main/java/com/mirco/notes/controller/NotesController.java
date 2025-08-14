@@ -49,7 +49,9 @@ public class NotesController {
 
     @PostMapping
     public ResponseEntity<StandardResponse<NoteResponse>> createNote(
-            @RequestBody final CreateNoteRequest createNoteRequest) {
+        @Validated
+        @RequestBody final CreateNoteRequest createNoteRequest
+    ) {
         final Note createdNote = noteService.createNote(
                 createNoteRequest.title(),
                 createNoteRequest.content(),
@@ -110,14 +112,14 @@ public class NotesController {
                 .toList();
     }
 
-    private NoteResponse generateNoteResponse(Note createdNote) {
+    private NoteResponse generateNoteResponse(Note note) {
         return NoteResponse.builder()
-                .id(createdNote.getId())
-                .title(createdNote.getTitle())
-                .content(createdNote.getContent())
-                .isArchived(createdNote.getIsArchived())
-                .systemUserId(createdNote.getSystemUser().getId())
-                .labels(extractLabelsFromNote(createdNote))
+                .id(note.getId())
+                .title(note.getTitle())
+                .content(note.getContent())
+                .isArchived(note.getIsArchived())
+                .systemUserId(note.getSystemUser().getId())
+                .labels(extractLabelsFromNote(note))
                 .build();
     }
 
