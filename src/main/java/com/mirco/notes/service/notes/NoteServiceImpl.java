@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-public class NoteServiceImpl implements INoteService{
+public class NoteServiceImpl implements INoteService {
 
     private final INoteRepository iNoteRepository;
     private final ISystemUserService iSystemUserService;
