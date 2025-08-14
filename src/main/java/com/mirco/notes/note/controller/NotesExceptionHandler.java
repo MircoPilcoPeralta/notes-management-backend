@@ -40,16 +40,6 @@ public class NotesExceptionHandler {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
-    @ExceptionHandler(LabelNotFoundException.class)
-    public ResponseEntity<StandardResponse> handleLabelNotFoundException(LabelNotFoundException ex) {
-        StandardResponse response = StandardResponse.builder()
-                .statusCode(HttpStatus.NOT_FOUND.value())
-                .message(ex.getMessage())
-                .data(null)
-                .build();
-
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
-    }
 
     @ExceptionHandler(NoteWithLabelsWithNullIdException.class)
     public ResponseEntity<StandardResponse> handleNoteWithLabelsWithNullIdException(NoteWithLabelsWithNullIdException ex) {
