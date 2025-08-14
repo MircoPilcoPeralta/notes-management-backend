@@ -90,9 +90,9 @@ public class NotesController {
 
     @PutMapping("/{noteId}")
     public ResponseEntity<StandardResponse<NoteResponse>> updateNote(
-            @Validated
             @Min(value = 1, message = "note ID must be a positive number")
             @PathVariable("noteId") final Long noteId,
+            @Validated
             @RequestBody final UpdateNoteRequest updateNoteRequest) {
         final Note updatedNote = iNoteService.updateNote(noteId, updateNoteRequest);
 
