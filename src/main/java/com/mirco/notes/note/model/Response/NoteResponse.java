@@ -1,5 +1,6 @@
 package com.mirco.notes.note.model.Response;
 
+import com.mirco.notes.label.model.response.LabelResponse;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

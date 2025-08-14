@@ -2,7 +2,7 @@ package com.mirco.notes.note.controller;
 
 import com.mirco.notes.note.model.Request.CreateNoteRequest;
 import com.mirco.notes.note.model.Request.UpdateNoteRequest;
-import com.mirco.notes.note.model.Response.LabelResponse;
+import com.mirco.notes.label.model.response.LabelResponse;
 import com.mirco.notes.note.model.Response.NoteResponse;
 import com.mirco.notes.note.model.dto.NoteFiltersDTO;
 import com.mirco.notes.note.model.entitites.Note;

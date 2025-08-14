@@ -1,6 +1,6 @@
 package com.mirco.notes.note.model.Request;
 
-import com.mirco.notes.note.model.entitites.Label;
+import com.mirco.notes.label.model.entities.Label;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

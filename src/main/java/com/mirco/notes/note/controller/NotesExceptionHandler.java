@@ -1,6 +1,6 @@
 package com.mirco.notes.note.controller;
 
-import com.mirco.notes.note.model.exceptions.LabelNotFoundException;
+import com.mirco.notes.label.model.exceptions.LabelNotFoundException;
 import com.mirco.notes.note.model.exceptions.NoteNotFoundException;
 import com.mirco.notes.note.model.exceptions.NoteWithLabelsWithNullIdException;
 import com.mirco.notes.shared.model.exceptions.UserNotRegisteredException;
