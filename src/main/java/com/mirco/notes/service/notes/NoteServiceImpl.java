@@ -1,14 +1,14 @@
 package com.mirco.notes.service.notes;
 
-import com.mirco.notes.notes.model.Request.UpdateNoteRequest;
-import com.mirco.notes.notes.model.dto.NoteFiltersDTO;
-import com.mirco.notes.notes.model.entitites.Label;
-import com.mirco.notes.notes.model.entitites.Note;
-import com.mirco.notes.notes.model.entitites.SystemUser;
-import com.mirco.notes.notes.model.exceptions.LabelNotFoundException;
-import com.mirco.notes.notes.model.exceptions.NoteNotFoundException;
-import com.mirco.notes.notes.model.exceptions.NoteWithLabelsWithNullIdException;
-import com.mirco.notes.notes.model.repository.INoteRepository;
+import com.mirco.notes.model.Request.UpdateNoteRequest;
+import com.mirco.notes.model.dto.NoteFiltersDTO;
+import com.mirco.notes.model.entitites.Label;
+import com.mirco.notes.model.entitites.Note;
+import com.mirco.notes.model.entitites.SystemUser;
+import com.mirco.notes.model.exceptions.LabelNotFoundException;
+import com.mirco.notes.model.exceptions.NoteNotFoundException;
+import com.mirco.notes.model.exceptions.NoteWithLabelsWithNullIdException;
+import com.mirco.notes.model.repository.INoteRepository;
 import com.mirco.notes.service.label.ILabelService;
 import com.mirco.notes.service.user.ISystemUserService;
 import com.mirco.shared.model.exceptions.UserNotRegisteredException;

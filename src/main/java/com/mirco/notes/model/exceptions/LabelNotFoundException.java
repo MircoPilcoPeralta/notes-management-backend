@@ -1,4 +1,4 @@
-package com.mirco.notes.notes.model.exceptions;
+package com.mirco.notes.model.exceptions;
 
 public class LabelNotFoundException extends RuntimeException {
 

@@ -1,6 +1,5 @@
-package com.mirco.notes.notes.model.Response;
+package com.mirco.notes.model.Response;
 
-import com.mirco.notes.notes.model.entitites.Label;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

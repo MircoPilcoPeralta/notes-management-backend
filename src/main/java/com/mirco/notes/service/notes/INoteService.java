@@ -1,8 +1,8 @@
 package com.mirco.notes.service.notes;
 
-import com.mirco.notes.notes.model.Request.UpdateNoteRequest;
-import com.mirco.notes.notes.model.dto.NoteFiltersDTO;
-import com.mirco.notes.notes.model.entitites.Note;
+import com.mirco.notes.model.Request.UpdateNoteRequest;
+import com.mirco.notes.model.dto.NoteFiltersDTO;
+import com.mirco.notes.model.entitites.Note;
 import org.springframework.data.domain.Page;
 
 import java.util.List;

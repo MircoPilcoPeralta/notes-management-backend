@@ -1,11 +1,11 @@
 package com.mirco.notes.controller;
 
-import com.mirco.notes.notes.model.Request.CreateNoteRequest;
-import com.mirco.notes.notes.model.Request.UpdateNoteRequest;
-import com.mirco.notes.notes.model.Response.LabelResponse;
-import com.mirco.notes.notes.model.Response.NoteResponse;
-import com.mirco.notes.notes.model.dto.NoteFiltersDTO;
-import com.mirco.notes.notes.model.entitites.Note;
+import com.mirco.notes.model.Request.CreateNoteRequest;
+import com.mirco.notes.model.Request.UpdateNoteRequest;
+import com.mirco.notes.model.Response.LabelResponse;
+import com.mirco.notes.model.Response.NoteResponse;
+import com.mirco.notes.model.dto.NoteFiltersDTO;
+import com.mirco.notes.model.entitites.Note;
 import com.mirco.notes.service.notes.INoteService;
 import com.mirco.shared.model.response.StandardResponse;
 import jakarta.validation.constraints.Min;

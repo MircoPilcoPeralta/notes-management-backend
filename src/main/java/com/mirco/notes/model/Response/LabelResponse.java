@@ -1,4 +1,4 @@
-package com.mirco.notes.notes.model.Response;
+package com.mirco.notes.model.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

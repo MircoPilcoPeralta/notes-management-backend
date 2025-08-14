@@ -1,4 +1,4 @@
-package com.mirco.notes.notes.model.exceptions;
+package com.mirco.notes.model.exceptions;
 
 public class NoteNotFoundException extends RuntimeException {
     private static final String DEFAULT_MESSAGE = "Note not found";

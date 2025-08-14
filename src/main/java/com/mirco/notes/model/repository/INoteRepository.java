@@ -1,6 +1,6 @@
-package com.mirco.notes.notes.model.repository;
+package com.mirco.notes.model.repository;
 
-import com.mirco.notes.notes.model.entitites.Note;
+import com.mirco.notes.model.entitites.Note;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

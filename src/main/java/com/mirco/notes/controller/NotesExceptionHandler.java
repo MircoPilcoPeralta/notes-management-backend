@@ -1,8 +1,8 @@
 package com.mirco.notes.controller;
 
-import com.mirco.notes.notes.model.exceptions.LabelNotFoundException;
-import com.mirco.notes.notes.model.exceptions.NoteNotFoundException;
-import com.mirco.notes.notes.model.exceptions.NoteWithLabelsWithNullIdException;
+import com.mirco.notes.model.exceptions.LabelNotFoundException;
+import com.mirco.notes.model.exceptions.NoteNotFoundException;
+import com.mirco.notes.model.exceptions.NoteWithLabelsWithNullIdException;
 import com.mirco.shared.model.exceptions.UserNotRegisteredException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;

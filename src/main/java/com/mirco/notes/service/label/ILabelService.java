@@ -1,6 +1,6 @@
 package com.mirco.notes.service.label;
 
-import com.mirco.notes.notes.model.entitites.Label;
+import com.mirco.notes.model.entitites.Label;
 
 public interface ILabelService {
 

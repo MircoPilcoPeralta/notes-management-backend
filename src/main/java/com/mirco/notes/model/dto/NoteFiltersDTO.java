@@ -1,4 +1,4 @@
-package com.mirco.notes.notes.model.dto;
+package com.mirco.notes.model.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;

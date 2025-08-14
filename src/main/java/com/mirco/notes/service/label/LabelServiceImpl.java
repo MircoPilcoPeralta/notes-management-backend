@@ -1,7 +1,7 @@
 package com.mirco.notes.service.label;
 
-import com.mirco.notes.notes.model.entitites.Label;
-import com.mirco.notes.notes.model.repository.ILabelRepository;
+import com.mirco.notes.model.entitites.Label;
+import com.mirco.notes.model.repository.ILabelRepository;
 import org.springframework.stereotype.Service;
 
 @Service
