@@ -4,15 +4,18 @@ import com.mirco.notes.notes.model.Request.CreateNoteRequest;
 import com.mirco.notes.notes.model.Request.UpdateNoteRequest;
 import com.mirco.notes.notes.model.Response.LabelResponse;
 import com.mirco.notes.notes.model.Response.NoteResponse;
+import com.mirco.notes.notes.model.dto.NoteFiltersDTO;
 import com.mirco.notes.notes.model.entitites.Note;
 import com.mirco.notes.service.notes.INoteService;
 import com.mirco.shared.model.response.StandardResponse;
 import jakarta.validation.constraints.Min;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -31,6 +34,28 @@ public class NotesController {
     public NotesController(INoteService noteService) {
         this.iNoteService = noteService;
     }
+
+
+    @GetMapping()
+    public ResponseEntity<StandardResponse<Page<NoteResponse>>> getAllNotesPaginated(
+            @ModelAttribute NoteFiltersDTO noteFiltersDTO
+        ) {
+        final Page<Note> notesPaginated = iNoteService.getAllNotesPaginated(noteFiltersDTO);
+
+        final Page<NoteResponse> noteResponses = generateNotesPaginatedResponse(notesPaginated);
+
+
+        final StandardResponse<Page<NoteResponse>> standardResponse = StandardResponse.<Page<NoteResponse>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Notes retrieved successfully")
+                .data(noteResponses)
+                .build();
+
+        return ResponseEntity.ok(standardResponse);
+    }
+
+
+
 
     @GetMapping("/users/{userId}")
     public ResponseEntity<StandardResponse<List<NoteResponse>>> getAllNotesFromUserById(
@@ -160,6 +185,10 @@ public class NotesController {
                 .systemUserId(note.getSystemUser().getId())
                 .labels(extractLabelsFromNote(note))
                 .build();
+    }
+
+    private Page<NoteResponse> generateNotesPaginatedResponse(Page<Note> notesPaginated) {
+        return notesPaginated.map(this::generateNoteResponse);
     }
 
 }

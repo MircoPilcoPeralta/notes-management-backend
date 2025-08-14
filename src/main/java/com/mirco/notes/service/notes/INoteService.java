@@ -1,7 +1,9 @@
 package com.mirco.notes.service.notes;
 
 import com.mirco.notes.notes.model.Request.UpdateNoteRequest;
+import com.mirco.notes.notes.model.dto.NoteFiltersDTO;
 import com.mirco.notes.notes.model.entitites.Note;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -50,4 +52,12 @@ public interface INoteService {
      */
     Boolean deleteNote(Long noteId);
 
+
+    /**
+     * Method to obtain all notes paginated.
+     *
+     * @param noteFiltersDTO filter to apply to the notes.
+     * @return a page of notes that match the criteria.
+     */
+    Page<Note> getAllNotesPaginated(NoteFiltersDTO noteFiltersDTO);
 }

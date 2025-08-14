@@ -1,6 +1,7 @@
 package com.mirco.notes.service.notes;
 
 import com.mirco.notes.notes.model.Request.UpdateNoteRequest;
+import com.mirco.notes.notes.model.dto.NoteFiltersDTO;
 import com.mirco.notes.notes.model.entitites.Label;
 import com.mirco.notes.notes.model.entitites.Note;
 import com.mirco.notes.notes.model.entitites.SystemUser;
@@ -11,6 +12,9 @@ import com.mirco.notes.notes.model.repository.INoteRepository;
 import com.mirco.notes.service.label.ILabelService;
 import com.mirco.notes.service.user.ISystemUserService;
 import com.mirco.shared.model.exceptions.UserNotRegisteredException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -84,6 +88,17 @@ public class NoteServiceImpl implements INoteService {
         Note noteFromDB = getNoteById(noteId);
         iNoteRepository.delete(noteFromDB);
         return true;
+    }
+
+    @Override
+    public Page<Note> getAllNotesPaginated(NoteFiltersDTO noteFiltersDTO) {
+        Pageable pageable = PageRequest.of( noteFiltersDTO.page(), noteFiltersDTO.size());
+        return iNoteRepository.findAllByTitleLikeAndContentLikeAndLabels_IdIn(
+                noteFiltersDTO.title(),
+                noteFiltersDTO.content(),
+                noteFiltersDTO.labelIds(),
+                noteFiltersDTO.labelIds() == null ? 0 : noteFiltersDTO.labelIds().size(),
+                pageable);
     }
 
     private void mergeNoteLabels(UpdateNoteRequest updateNoteRequest, Note noteFromDB) {
