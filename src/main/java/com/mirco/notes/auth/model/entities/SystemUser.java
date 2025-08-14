@@ -1,7 +1,8 @@
-package com.mirco.notes.note.model.entitites;
+package com.mirco.notes.auth.model.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.mirco.notes.label.model.entities.Label;
+import com.mirco.notes.note.model.entitites.Note;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

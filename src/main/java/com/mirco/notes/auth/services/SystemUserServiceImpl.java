@@ -1,7 +1,7 @@
-package com.mirco.notes.note.service.user;
+package com.mirco.notes.auth.services;
 
-import com.mirco.notes.note.model.entitites.SystemUser;
-import com.mirco.notes.note.model.repository.ISystemUserRepository;
+import com.mirco.notes.auth.model.entities.SystemUser;
+import com.mirco.notes.auth.model.repository.ISystemUserRepository;
 import org.springframework.stereotype.Service;
 
 @Service

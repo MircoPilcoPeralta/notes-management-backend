@@ -6,7 +6,7 @@ import com.mirco.notes.label.model.response.LabelResponse;
 import com.mirco.notes.note.model.Response.NoteResponse;
 import com.mirco.notes.note.model.dto.NoteFiltersDTO;
 import com.mirco.notes.note.model.entitites.Note;
-import com.mirco.notes.note.service.notes.INoteService;
+import com.mirco.notes.note.service.INoteService;
 import com.mirco.notes.shared.model.response.StandardResponse;
 import jakarta.validation.constraints.Min;
 import org.springframework.data.domain.Page;

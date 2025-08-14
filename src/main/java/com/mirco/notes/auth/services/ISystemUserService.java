@@ -1,6 +1,6 @@
-package com.mirco.notes.note.service.user;
+package com.mirco.notes.auth.services;
 
-import com.mirco.notes.note.model.entitites.SystemUser;
+import com.mirco.notes.auth.model.entities.SystemUser;
 
 public interface ISystemUserService {
     /**

@@ -1,6 +1,6 @@
-package com.mirco.notes.note.model.repository;
+package com.mirco.notes.auth.model.repository;
 
-import com.mirco.notes.note.model.entitites.SystemUser;
+import com.mirco.notes.auth.model.entities.SystemUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

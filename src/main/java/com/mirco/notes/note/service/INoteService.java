@@ -1,4 +1,4 @@
-package com.mirco.notes.note.service.notes;
+package com.mirco.notes.note.service;
 
 import com.mirco.notes.note.model.Request.UpdateNoteRequest;
 import com.mirco.notes.note.model.dto.NoteFiltersDTO;

@@ -1,16 +1,16 @@
-package com.mirco.notes.note.service.notes;
+package com.mirco.notes.note.service;
 
 import com.mirco.notes.note.model.Request.UpdateNoteRequest;
 import com.mirco.notes.note.model.dto.NoteFiltersDTO;
 import com.mirco.notes.label.model.entities.Label;
 import com.mirco.notes.note.model.entitites.Note;
-import com.mirco.notes.note.model.entitites.SystemUser;
+import com.mirco.notes.auth.model.entities.SystemUser;
 import com.mirco.notes.label.model.exceptions.LabelNotFoundException;
 import com.mirco.notes.note.model.exceptions.NoteNotFoundException;
 import com.mirco.notes.note.model.exceptions.NoteWithLabelsWithNullIdException;
 import com.mirco.notes.note.model.repository.INoteRepository;
 import com.mirco.notes.label.service.ILabelService;
-import com.mirco.notes.note.service.user.ISystemUserService;
+import com.mirco.notes.auth.services.ISystemUserService;
 import com.mirco.notes.shared.model.exceptions.UserNotRegisteredException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
