@@ -10,6 +10,7 @@ import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -68,6 +69,25 @@ public class LabelController {
 
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+
+    @DeleteMapping("/{labelId}")
+    public ResponseEntity<StandardResponse<Boolean>> deleteLabel(
+            @Validated
+            @Min(value = 1, message = "Label id must be a positive number")
+            @PathVariable("labelId") Long labelId) {
+
+        Boolean deletionResult = iLabelService.deleteLabelById(labelId);
+
+        StandardResponse<Boolean> response = StandardResponse.<Boolean>builder()
+                .statusCode(HttpStatus.NO_CONTENT.value())
+                .message("Label deleted successfully")
+                .data(deletionResult)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.OK).body(response);
+    }
+
 
     private static LabelResponse generateLabelResponse(Label createdLabel) {
         return LabelResponse.builder()

@@ -32,4 +32,13 @@ public interface ILabelService {
      */
     Label createLabel(CreateLabelRequest createLabelRequest);
 
+
+    /**
+     * Method to delete a label by its id.
+     *
+     * @param labelId the ID of the label to be deleted
+     * @return true if the label was successfully deleted, false otherwise
+     */
+    Boolean deleteLabelById(Long labelId);
+
 }
