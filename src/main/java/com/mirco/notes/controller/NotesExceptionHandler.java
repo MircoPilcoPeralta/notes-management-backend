@@ -1,6 +1,8 @@
 package com.mirco.notes.controller;
 
+import com.mirco.notes.notes.model.exceptions.LabelNotFoundException;
 import com.mirco.notes.notes.model.exceptions.NoteNotFoundException;
+import com.mirco.notes.notes.model.exceptions.NoteWithLabelsWithNullIdException;
 import com.mirco.shared.model.exceptions.UserNotRegisteredException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -36,6 +38,28 @@ public class NotesExceptionHandler {
                 .build();
 
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(LabelNotFoundException.class)
+    public ResponseEntity<StandardResponse> handleLabelNotFoundException(LabelNotFoundException ex) {
+        StandardResponse response = StandardResponse.builder()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage())
+                .data(null)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(NoteWithLabelsWithNullIdException.class)
+    public ResponseEntity<StandardResponse> handleNoteWithLabelsWithNullIdException(NoteWithLabelsWithNullIdException ex) {
+        StandardResponse response = StandardResponse.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .message(ex.getMessage())
+                .data(null)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)

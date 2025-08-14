@@ -4,7 +4,9 @@ import com.mirco.notes.notes.model.Request.UpdateNoteRequest;
 import com.mirco.notes.notes.model.entitites.Label;
 import com.mirco.notes.notes.model.entitites.Note;
 import com.mirco.notes.notes.model.entitites.SystemUser;
+import com.mirco.notes.notes.model.exceptions.LabelNotFoundException;
 import com.mirco.notes.notes.model.exceptions.NoteNotFoundException;
+import com.mirco.notes.notes.model.exceptions.NoteWithLabelsWithNullIdException;
 import com.mirco.notes.notes.model.repository.INoteRepository;
 import com.mirco.notes.service.label.ILabelService;
 import com.mirco.notes.service.user.ISystemUserService;
@@ -86,14 +88,13 @@ public class NoteServiceImpl implements INoteService {
         }
 
         if(requestHasLabels) {
-            // compruebo que existan
             updateNoteRequest.labels().forEach(label -> {
                 if(label.getId() == null) {
-                    throw new IllegalArgumentException("Label ID cannot be null");
+                    throw new NoteWithLabelsWithNullIdException("Label ID cannot be null");
                 }
                 final Label labelFromDB = iLabelService.getLabelById(label.getId());
                 if(labelFromDB == null) {
-                    throw new IllegalArgumentException("Label with ID " + label.getId() + " does not exist.");
+                    throw new LabelNotFoundException("Label with ID " + label.getId() + " does not exist.");
                 }
             });
 
