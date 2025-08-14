@@ -15,7 +15,7 @@ public class NotesExceptionHandler {
     public ResponseEntity<StandardResponse> handleUserNotRegisteredException(UserNotRegisteredException ex) {
             StandardResponse response = StandardResponse.builder()
                 .statusCode(HttpStatus.NOT_FOUND.value())
-                .message("User not registered")
+                .message(ex.getMessage())
                 .data(null)
                 .build();
 
