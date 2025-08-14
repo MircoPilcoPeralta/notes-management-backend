@@ -7,7 +7,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.PrePersist;
@@ -41,12 +40,7 @@ public class Label {
     @JsonIgnore
     private SystemUser systemUser;
 
-    @ManyToMany
-    @JoinTable(
-        name = "label_note",
-        joinColumns = @JoinColumn(name = "id_label"),
-        inverseJoinColumns = @JoinColumn(name = "id_note")
-    )
+    @ManyToMany(mappedBy = "labels")
     @JsonIgnore
     private Set<Note> notes;
 
