@@ -85,6 +85,9 @@ public class NotesController {
     }
 
     private List<LabelResponse> extractLabelsFromNote(final Note note) {
+        if (note.getLabels() == null || note.getLabels().isEmpty()) {
+            return List.of();
+        }
         return note.getLabels().stream()
                 .map(label ->
                         LabelResponse.builder()
@@ -93,7 +96,6 @@ public class NotesController {
                                 .build())
                 .toList();
     }
-
 
     private List<NoteResponse> generateNoteResponseList(List<Note> notes) {
         return notes.stream()
