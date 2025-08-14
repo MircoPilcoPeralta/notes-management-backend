@@ -41,4 +41,13 @@ public interface INoteService {
      */
     Note updateNote(Long noteId, UpdateNoteRequest updateNoteRequest);
 
+
+    /**
+     * Deletes a note by its ID.
+     *
+     * @param noteId The ID of the note to delete.
+     * @return True if the note was successfully deleted, false otherwise.
+     */
+    Boolean deleteNote(Long noteId);
+
 }

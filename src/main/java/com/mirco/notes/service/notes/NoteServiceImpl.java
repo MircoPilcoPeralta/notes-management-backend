@@ -79,6 +79,13 @@ public class NoteServiceImpl implements INoteService {
         return iNoteRepository.save(noteFromDB);
     }
 
+    @Override
+    public Boolean deleteNote(Long noteId) {
+        Note noteFromDB = getNoteById(noteId);
+        iNoteRepository.delete(noteFromDB);
+        return true;
+    }
+
     private void mergeNoteLabels(UpdateNoteRequest updateNoteRequest, Note noteFromDB) {
         final boolean notesFromBDHasLabels = noteFromDB.getLabels() != null && !noteFromDB.getLabels().isEmpty();
         final boolean requestHasLabels = updateNoteRequest.labels() != null && !updateNoteRequest.labels().isEmpty();
