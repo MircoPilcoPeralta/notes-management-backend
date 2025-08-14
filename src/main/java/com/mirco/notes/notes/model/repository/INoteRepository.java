@@ -32,7 +32,8 @@ public interface INoteRepository extends JpaRepository<Note, Long> {
             " AND (:content IS NULL OR upper(n.content) LIKE concat('%', upper(:content), '%')) " +
             " AND (:labelIds IS NULL OR l.id IN :labelIds) " +
             " GROUP BY n " +
-            " HAVING (:labelIds IS NULL OR COUNT(DISTINCT l.id) = :labelsCount) "
+            " HAVING (:labelIds IS NULL OR COUNT(DISTINCT l.id) = :labelsCount)" +
+            " ORDER BY n.id "
     )
     Page<Note> findAllByTitleLikeAndContentLikeAndLabels_IdIn(
             @Param("title") String title,
@@ -40,4 +41,36 @@ public interface INoteRepository extends JpaRepository<Note, Long> {
             @Param("labelIds") Set<Long> labelIds,
             @Param("labelsCount") Integer labelsCount,
             Pageable pageable);
+
+
+    /**
+     * Method to get all notes paginated.
+     *
+     * @param title the title to search for.
+     * @param content the content to search for.
+     * @param labelIds the set of label ids to filter by.
+     * @param labelsCount the number of labels that must match.
+     * @param userId the id of the user to filter by.
+     * @param pageable the pagination information.
+     * @return a page of notes that match the criteria.
+     */
+    @Query(" SELECT n " +
+            " FROM Note n " +
+            " LEFT JOIN n.labels l " +
+            " WHERE (:title IS NULL OR upper(n.title) LIKE concat('%', upper(:title), '%')) " +
+            " AND (:content IS NULL OR upper(n.content) LIKE concat('%', upper(:content), '%')) " +
+            " AND (:userId IS NOT NULL AND :userId = n.systemUser.id) " +
+            " AND (:labelIds IS NULL OR l.id IN :labelIds) " +
+            " GROUP BY n " +
+            " HAVING (:labelIds IS NULL OR COUNT(DISTINCT l.id) = :labelsCount) " +
+            " ORDER BY n.id "
+    )
+    Page<Note> findAllByTitleLikeAndContentLikeAndLabels_IdInAAndSystemUserIdEquals(
+            @Param("title") String title,
+            @Param("content") String content,
+            @Param("labelIds") Set<Long> labelIds,
+            @Param("labelsCount") Integer labelsCount,
+            @Param("userId") Long userId,
+            Pageable pageable);
+
 }

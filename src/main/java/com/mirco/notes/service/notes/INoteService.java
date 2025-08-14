@@ -60,4 +60,14 @@ public interface INoteService {
      * @return a page of notes that match the criteria.
      */
     Page<Note> getAllNotesPaginated(NoteFiltersDTO noteFiltersDTO);
+
+    /**
+     * Method to obtain all notes paginated belonging to a specific user.
+     *
+     * @param noteFiltersDTO filter to apply to the notes.
+     * @param userId id of the user.
+     * @return a page of notes that match the criteria.
+     */
+    Page<Note> getAllNotesPaginated(NoteFiltersDTO noteFiltersDTO, Long userId);
+
 }

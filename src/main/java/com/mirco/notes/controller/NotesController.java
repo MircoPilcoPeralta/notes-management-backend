@@ -35,7 +35,6 @@ public class NotesController {
         this.iNoteService = noteService;
     }
 
-
     @GetMapping()
     public ResponseEntity<StandardResponse<Page<NoteResponse>>> getAllNotesPaginated(
             @Validated
@@ -56,6 +55,25 @@ public class NotesController {
     }
 
     @GetMapping("/users/{userId}")
+    public ResponseEntity<StandardResponse<Page<NoteResponse>>> getAllUserNotesPaginated(
+            @Validated
+            @ModelAttribute NoteFiltersDTO noteFiltersDTO,
+            @PathVariable("userId") final Long userId
+    ) {
+        final Page<Note> notesPaginated = iNoteService.getAllNotesPaginated(noteFiltersDTO, userId);
+
+        final Page<NoteResponse> noteResponses = generateNotesPaginatedResponse(notesPaginated);
+
+        final StandardResponse<Page<NoteResponse>> standardResponse = StandardResponse.<Page<NoteResponse>>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Notes retrieved successfully")
+                .data(noteResponses)
+                .build();
+
+        return ResponseEntity.ok(standardResponse);
+    }
+
+    @GetMapping("/users/{userId}/old")
     public ResponseEntity<StandardResponse<List<NoteResponse>>> getAllNotesFromUserById(
             @Validated
             @Min(value = 1, message = "User ID must be a positive number")

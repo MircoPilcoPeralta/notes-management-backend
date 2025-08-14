@@ -101,6 +101,18 @@ public class NoteServiceImpl implements INoteService {
                 pageable);
     }
 
+    @Override
+    public Page<Note> getAllNotesPaginated(NoteFiltersDTO noteFiltersDTO, Long userId) {
+        Pageable pageable = PageRequest.of( noteFiltersDTO.page(), noteFiltersDTO.size());
+        return iNoteRepository.findAllByTitleLikeAndContentLikeAndLabels_IdInAAndSystemUserIdEquals(
+                noteFiltersDTO.title(),
+                noteFiltersDTO.content(),
+                noteFiltersDTO.labelIds(),
+                noteFiltersDTO.labelIds() == null ? 0 : noteFiltersDTO.labelIds().size(),
+                userId,
+                pageable);
+    }
+
     private void mergeNoteLabels(UpdateNoteRequest updateNoteRequest, Note noteFromDB) {
         final boolean notesFromBDHasLabels = noteFromDB.getLabels() != null && !noteFromDB.getLabels().isEmpty();
         final boolean requestHasLabels = updateNoteRequest.labels() != null && !updateNoteRequest.labels().isEmpty();
