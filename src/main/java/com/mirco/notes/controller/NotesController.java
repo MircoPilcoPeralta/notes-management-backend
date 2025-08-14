@@ -38,6 +38,7 @@ public class NotesController {
 
     @GetMapping()
     public ResponseEntity<StandardResponse<Page<NoteResponse>>> getAllNotesPaginated(
+            @Validated
             @ModelAttribute NoteFiltersDTO noteFiltersDTO
         ) {
         final Page<Note> notesPaginated = iNoteService.getAllNotesPaginated(noteFiltersDTO);
@@ -53,9 +54,6 @@ public class NotesController {
 
         return ResponseEntity.ok(standardResponse);
     }
-
-
-
 
     @GetMapping("/users/{userId}")
     public ResponseEntity<StandardResponse<List<NoteResponse>>> getAllNotesFromUserById(
