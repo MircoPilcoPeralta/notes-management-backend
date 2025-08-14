@@ -2,12 +2,14 @@ package com.mirco.notes.service.notes;
 
 import com.mirco.notes.notes.model.entitites.Note;
 import com.mirco.notes.notes.model.entitites.SystemUser;
+import com.mirco.notes.notes.model.exceptions.NoteNotFoundException;
 import com.mirco.notes.notes.model.repository.INoteRepository;
 import com.mirco.notes.service.user.ISystemUserService;
 import com.mirco.shared.model.exceptions.UserNotRegisteredException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class NoteServiceImpl implements INoteService{
@@ -39,6 +41,17 @@ public class NoteServiceImpl implements INoteService{
         iNoteRepository.save(note);
 
         return note;
+    }
+
+    @Override
+    public Note getNoteById(Long noteId) {
+        Optional<Note> noteOptional = iNoteRepository.findById(noteId);
+
+        if(noteOptional.isEmpty()) {
+            throw new NoteNotFoundException("Note with ID " + noteId + " not found.");
+        }
+
+        return noteOptional.get();
     }
 
     private SystemUser getSystemUserById(Long userId) {

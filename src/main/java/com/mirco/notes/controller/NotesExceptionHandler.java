@@ -1,5 +1,6 @@
 package com.mirco.notes.controller;
 
+import com.mirco.notes.notes.model.exceptions.NoteNotFoundException;
 import com.mirco.shared.model.exceptions.UserNotRegisteredException;
 import com.mirco.shared.model.response.StandardResponse;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,17 @@ public class NotesExceptionHandler {
             StandardResponse response = StandardResponse.builder()
                 .statusCode(HttpStatus.NOT_FOUND.value())
                 .message("User not registered")
+                .data(null)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
+    }
+
+    @ExceptionHandler(NoteNotFoundException.class)
+    public ResponseEntity<StandardResponse> handleNoteNotFoundException(NoteNotFoundException ex) {
+        StandardResponse response = StandardResponse.builder()
+                .statusCode(HttpStatus.NOT_FOUND.value())
+                .message(ex.getMessage())
                 .data(null)
                 .build();
 

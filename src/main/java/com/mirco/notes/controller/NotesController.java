@@ -1,6 +1,8 @@
 package com.mirco.notes.controller;
 
 import com.mirco.notes.notes.model.Request.CreateNoteRequest;
+import com.mirco.notes.notes.model.Response.LabelResponse;
+import com.mirco.notes.notes.model.Response.NoteResponse;
 import com.mirco.notes.notes.model.entitites.Note;
 import com.mirco.notes.service.notes.INoteService;
 import com.mirco.shared.model.response.StandardResponse;
@@ -52,5 +54,36 @@ public class NotesController {
         return ResponseEntity.status(HttpStatus.CREATED).body(standardResponse);
      }
 
+     @GetMapping("/{noteId}")
+    public ResponseEntity<StandardResponse> getNoteById(final @PathVariable("noteId") Long noteId) {
+        final Note note = noteService.getNoteById(noteId);
+
+         final NoteResponse noteResponse = NoteResponse.builder()
+                .id(note.getId())
+                .title(note.getTitle())
+                .content(note.getContent())
+                .isArchived(note.getIsArchived())
+                .systemUserId(note.getSystemUser().getId())
+                .labels(extractLabelsFromNote(note))
+                .build();
+
+        final StandardResponse standardResponse = StandardResponse.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Note retrieved successfully")
+                .data(noteResponse)
+                .build();
+
+        return ResponseEntity.ok(standardResponse);
+     }
+
+     private List<LabelResponse> extractLabelsFromNote(final Note note) {
+         return note.getLabels().stream()
+                 .map(label ->
+                         LabelResponse.builder()
+                                 .id(label.getId())
+                                 .name(label.getName())
+                                 .build())
+                 .toList();
+     }
 
 }

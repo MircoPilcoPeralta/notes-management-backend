@@ -23,4 +23,12 @@ public interface INoteService {
      */
     Note createNote(String title, String content, Long userId);
 
+    /**
+     * Retrieves a specific note by its ID.
+     *
+     * @param noteId The ID of the note.
+     * @return The Note object found.
+     */
+    Note getNoteById(Long noteId);
+
 }
