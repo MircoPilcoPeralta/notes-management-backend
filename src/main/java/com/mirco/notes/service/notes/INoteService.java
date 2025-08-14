@@ -1,5 +1,6 @@
 package com.mirco.notes.service.notes;
 
+import com.mirco.notes.notes.model.Request.UpdateNoteRequest;
 import com.mirco.notes.notes.model.entitites.Note;
 
 import java.util.List;
@@ -30,5 +31,14 @@ public interface INoteService {
      * @return The Note object found.
      */
     Note getNoteById(Long noteId);
+
+    /**
+     * Updates an existing note.
+     *
+     * @param noteId The ID of the note to update.
+     * @param updateNoteRequest The note with fields updated.
+     * @return The updated Note object.
+     */
+    Note updateNote(Long noteId, UpdateNoteRequest updateNoteRequest);
 
 }

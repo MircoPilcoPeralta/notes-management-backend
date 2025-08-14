@@ -1,6 +1,7 @@
 package com.mirco.notes.controller;
 
 import com.mirco.notes.notes.model.Request.CreateNoteRequest;
+import com.mirco.notes.notes.model.Request.UpdateNoteRequest;
 import com.mirco.notes.notes.model.Response.LabelResponse;
 import com.mirco.notes.notes.model.Response.NoteResponse;
 import com.mirco.notes.notes.model.entitites.Note;
@@ -13,6 +14,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -85,6 +87,26 @@ public class NotesController {
 
         return ResponseEntity.ok(standardResponse);
     }
+
+    @PutMapping("/{noteId}")
+    public ResponseEntity<StandardResponse<NoteResponse>> updateNote(
+            @Validated
+            @Min(value = 1, message = "note ID must be a positive number")
+            @PathVariable("noteId") final Long noteId,
+            @RequestBody final UpdateNoteRequest updateNoteRequest) {
+        final Note updatedNote = iNoteService.updateNote(noteId, updateNoteRequest);
+
+        final NoteResponse noteResponse = generateNoteResponse(updatedNote);
+
+        final StandardResponse<NoteResponse> standardResponse = StandardResponse.<NoteResponse>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Note updated successfully")
+                .data(noteResponse)
+                .build();
+
+        return ResponseEntity.ok(standardResponse);
+    }
+
 
     private List<LabelResponse> extractLabelsFromNote(final Note note) {
         if (note.getLabels() == null || note.getLabels().isEmpty()) {
