@@ -23,10 +23,10 @@ import java.util.List;
 @RequestMapping("/api/notes")
 public class NotesController {
 
-    private final INoteService noteService;
+    private final INoteService iNoteService;
 
     public NotesController(INoteService noteService) {
-        this.noteService = noteService;
+        this.iNoteService = noteService;
     }
 
     @GetMapping("/users/{userId}")
@@ -34,7 +34,7 @@ public class NotesController {
             @Validated
             @Min(value = 1, message = "User ID must be a positive number")
             @PathVariable("userId") final Long userId) {
-        final List<Note> notes = noteService.getAllNotesFromUserById(userId);
+        final List<Note> notes = iNoteService.getAllNotesFromUserById(userId);
 
         final List<NoteResponse> noteResponses = generateNoteResponseList(notes);
 
@@ -52,7 +52,7 @@ public class NotesController {
         @Validated
         @RequestBody final CreateNoteRequest createNoteRequest
     ) {
-        final Note createdNote = noteService.createNote(
+        final Note createdNote = iNoteService.createNote(
                 createNoteRequest.title(),
                 createNoteRequest.content(),
                 createNoteRequest.systemUserId());
@@ -73,7 +73,7 @@ public class NotesController {
             @Validated
             @Min(value = 1, message = "note ID must be a positive number")
             @PathVariable("noteId") final Long noteId) {
-        final Note note = noteService.getNoteById(noteId);
+        final Note note = iNoteService.getNoteById(noteId);
 
         final NoteResponse noteResponse = generateNoteResponse(note);
 
