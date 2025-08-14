@@ -6,6 +6,7 @@ import com.mirco.notes.notes.model.Response.NoteResponse;
 import com.mirco.notes.notes.model.entitites.Note;
 import com.mirco.notes.service.notes.INoteService;
 import com.mirco.shared.model.response.StandardResponse;
+import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,9 +28,10 @@ public class NotesController {
         this.noteService = noteService;
     }
 
-
     @GetMapping("/users/{userId}")
-    public ResponseEntity<StandardResponse<List<NoteResponse>>> getAllNotesFromUserById(final @PathVariable("userId") Long userId) {
+    public ResponseEntity<StandardResponse<List<NoteResponse>>> getAllNotesFromUserById(
+            @Min(value = 1, message = "User ID must be a positive number")
+            @PathVariable("userId") final Long userId) {
         final List<Note> notes = noteService.getAllNotesFromUserById(userId);
 
         final List<NoteResponse> noteResponses = generateNoteResponseList(notes);
