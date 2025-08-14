@@ -48,8 +48,12 @@ public class NotesController {
     }
 
     @PostMapping
-    public ResponseEntity<StandardResponse<NoteResponse>> createNote(@RequestBody final CreateNoteRequest createNoteRequest) {
-        final Note createdNote = noteService.createNote(createNoteRequest.title(), createNoteRequest.content(), createNoteRequest.systemUserId());
+    public ResponseEntity<StandardResponse<NoteResponse>> createNote(
+            @RequestBody final CreateNoteRequest createNoteRequest) {
+        final Note createdNote = noteService.createNote(
+                createNoteRequest.title(),
+                createNoteRequest.content(),
+                createNoteRequest.systemUserId());
 
         final NoteResponse noteResponse = generateNoteResponse(createdNote);
 
