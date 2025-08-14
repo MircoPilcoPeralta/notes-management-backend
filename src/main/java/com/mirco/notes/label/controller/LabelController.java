@@ -58,10 +58,7 @@ public class LabelController {
 
         Label createdLabel = iLabelService.createLabel(createLabelRequest);
 
-        LabelResponse labelResponse = LabelResponse.builder()
-                .id(createdLabel.getId())
-                .name(createdLabel.getName())
-                .build();
+        LabelResponse labelResponse = generateLabelResponse(createdLabel);
 
         StandardResponse<LabelResponse> response = StandardResponse.<LabelResponse>builder()
                 .statusCode(HttpStatus.CREATED.value())
@@ -72,14 +69,17 @@ public class LabelController {
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
+    private static LabelResponse generateLabelResponse(Label createdLabel) {
+        return LabelResponse.builder()
+                .id(createdLabel.getId())
+                .name(createdLabel.getName())
+                .build();
+    }
 
 
     private static List<LabelResponse> generateLabelListResponse(Set<Label> labelsFromUser) {
         return labelsFromUser.stream().map(
-                labelEntity -> LabelResponse.builder()
-                        .id(labelEntity.getId())
-                        .name(labelEntity.getName())
-                        .build()
+                LabelController::generateLabelResponse
         ).toList();
     }
 
