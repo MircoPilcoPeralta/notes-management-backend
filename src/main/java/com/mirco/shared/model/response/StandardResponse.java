@@ -11,8 +11,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class StandardResponse {
+public class StandardResponse<T> {
     private Integer statusCode;
     private String message;
-    private Object data;
+    private T data;
 }
