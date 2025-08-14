@@ -8,7 +8,7 @@ public record CreateNoteRequest(
     @NotBlank(message = "Title is required")
     @Size(max = 200, message = "Title must not exceed 200 characters")
     String title,
-    @NotBlank(message = "Content is required")
+    @NotNull(message = "Content is required")
     String content,
     @NotNull(message = "userId is required")
     Long systemUserId
