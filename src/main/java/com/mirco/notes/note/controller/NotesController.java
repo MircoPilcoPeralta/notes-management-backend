@@ -1,5 +1,7 @@
 package com.mirco.notes.note.controller;
 
+import com.mirco.notes.auth.model.entities.SystemUser;
+import com.mirco.notes.auth.services.systemUser.ISystemUserService;
 import com.mirco.notes.note.model.Request.CreateNoteRequest;
 import com.mirco.notes.note.model.Request.UpdateNoteRequest;
 import com.mirco.notes.label.model.response.LabelResponse;
@@ -12,6 +14,8 @@ import jakarta.validation.constraints.Min;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,12 +35,14 @@ import java.util.List;
 public class NotesController {
 
     private final INoteService iNoteService;
+    private final ISystemUserService iSystemUserService;
 
-    public NotesController(INoteService noteService) {
+    public NotesController(INoteService noteService, ISystemUserService iSystemUserService) {
         this.iNoteService = noteService;
+        this.iSystemUserService = iSystemUserService;
     }
 
-    @GetMapping()
+    @GetMapping("/all")
     public ResponseEntity<StandardResponse<Page<NoteResponse>>> getAllNotesPaginated(
             @Validated
             @ModelAttribute NoteFiltersDTO noteFiltersDTO
@@ -55,13 +61,15 @@ public class NotesController {
         return ResponseEntity.ok(standardResponse);
     }
 
-    @GetMapping("/users/{userId}")
+    @GetMapping()
     public ResponseEntity<StandardResponse<Page<NoteResponse>>> getAllUserNotesPaginated(
             @Validated
             @ModelAttribute NoteFiltersDTO noteFiltersDTO,
-            @PathVariable("userId") final Long userId
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        final Page<Note> notesPaginated = iNoteService.getAllNotesPaginated(noteFiltersDTO, userId);
+        SystemUser systemUserFromDB = getSystemUserByDetails(userDetails);
+
+        final Page<Note> notesPaginated = iNoteService.getAllNotesPaginated(noteFiltersDTO, systemUserFromDB.getId());
 
         final Page<NoteResponse> noteResponses = generateNotesPaginatedResponse(notesPaginated);
 
@@ -74,33 +82,18 @@ public class NotesController {
         return ResponseEntity.ok(standardResponse);
     }
 
-    @GetMapping("/users/{userId}/old")
-    public ResponseEntity<StandardResponse<List<NoteResponse>>> getAllNotesFromUserById(
-            @Validated
-            @Min(value = 1, message = "User ID must be a positive number")
-            @PathVariable("userId") final Long userId) {
-        final List<Note> notes = iNoteService.getAllNotesFromUserById(userId);
-
-        final List<NoteResponse> noteResponses = generateNoteResponseList(notes);
-
-        final StandardResponse<List<NoteResponse>> standardResponse = StandardResponse.<List<NoteResponse>>builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("Notes retrieved successfully")
-                .data(noteResponses)
-                .build();
-
-        return ResponseEntity.ok(standardResponse);
-    }
-
     @PostMapping
     public ResponseEntity<StandardResponse<NoteResponse>> createNote(
         @Validated
-        @RequestBody final CreateNoteRequest createNoteRequest
+        @RequestBody final CreateNoteRequest createNoteRequest,
+        @AuthenticationPrincipal UserDetails userDetails
     ) {
+        SystemUser systemUserFromDB = getSystemUserByDetails(userDetails);
+
         final Note createdNote = iNoteService.createNote(
                 createNoteRequest.title(),
                 createNoteRequest.content(),
-                createNoteRequest.systemUserId());
+                systemUserFromDB.getId());
 
         final NoteResponse noteResponse = generateNoteResponse(createdNote);
 
@@ -117,8 +110,10 @@ public class NotesController {
     public ResponseEntity<StandardResponse<NoteResponse>> getNoteById(
             @Validated
             @Min(value = 1, message = "note ID must be a positive number")
-            @PathVariable("noteId") final Long noteId) {
-        final Note note = iNoteService.getNoteById(noteId);
+            @PathVariable("noteId") final Long noteId,
+            @AuthenticationPrincipal UserDetails userDetails) {
+
+        final Note note = iNoteService.getNoteIfOwnedByCurrentUser(noteId, userDetails);
 
         final NoteResponse noteResponse = generateNoteResponse(note);
 
@@ -136,8 +131,10 @@ public class NotesController {
             @Min(value = 1, message = "note ID must be a positive number")
             @PathVariable("noteId") final Long noteId,
             @Validated
-            @RequestBody final UpdateNoteRequest updateNoteRequest) {
-        final Note updatedNote = iNoteService.updateNote(noteId, updateNoteRequest);
+            @RequestBody final UpdateNoteRequest updateNoteRequest,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        final Note updatedNote = iNoteService.updateNoteIfOwnedByCurrentUser(noteId, updateNoteRequest, userDetails);
 
         final NoteResponse noteResponse = generateNoteResponse(updatedNote);
 
@@ -153,9 +150,10 @@ public class NotesController {
     @DeleteMapping("/{noteId}")
     public ResponseEntity<StandardResponse<Boolean>> deleteNote(
             @Min(value = 1, message = "note ID must be a positive number")
-            @PathVariable("noteId") final Long noteId) {
-
-        Boolean deleteOperationResult = iNoteService.deleteNote(noteId);
+            @PathVariable("noteId") final Long noteId,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        Boolean deleteOperationResult = iNoteService.deleteNoteIfOwnedByCurrentUser(noteId, userDetails);
 
         final StandardResponse<Boolean> standardResponse = StandardResponse.<Boolean>builder()
                 .statusCode(HttpStatus.OK.value())
@@ -168,9 +166,10 @@ public class NotesController {
 
     @PatchMapping("/{noteId}/toggle-archive")
     public ResponseEntity<StandardResponse<NoteResponse>> toggleArchiveStatus(
-            @PathVariable("noteId") final Long noteId) {
-
-        final Note updatedNote = iNoteService.toggleArchiveStatusById(noteId);
+            @PathVariable("noteId") final Long noteId,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        final Note updatedNote = iNoteService.toggleArchiveStatusIfOwnedByCurrentUser(noteId, userDetails);
 
         final NoteResponse noteResponse = generateNoteResponse(updatedNote);
 
@@ -183,8 +182,6 @@ public class NotesController {
         return ResponseEntity.ok(standardResponse);
     }
 
-
-
     private List<LabelResponse> extractLabelsFromNote(final Note note) {
         if (note.getLabels() == null || note.getLabels().isEmpty()) {
             return List.of();
@@ -195,19 +192,6 @@ public class NotesController {
                                 .id(label.getId())
                                 .name(label.getName())
                                 .build())
-                .toList();
-    }
-
-    private List<NoteResponse> generateNoteResponseList(List<Note> notes) {
-        return notes.stream()
-                .map(note -> NoteResponse.builder()
-                        .id(note.getId())
-                        .title(note.getTitle())
-                        .content(note.getContent())
-                        .isArchived(note.getIsArchived())
-                        .systemUserId(note.getSystemUser().getId())
-                        .labels(extractLabelsFromNote(note))
-                        .build())
                 .toList();
     }
 
@@ -224,6 +208,10 @@ public class NotesController {
 
     private Page<NoteResponse> generateNotesPaginatedResponse(Page<Note> notesPaginated) {
         return notesPaginated.map(this::generateNoteResponse);
+    }
+
+    private SystemUser getSystemUserByDetails(UserDetails userDetails) {
+        return iSystemUserService.findSystemUserByEmail(userDetails.getUsername());
     }
 
 }

@@ -7,6 +7,7 @@ import com.mirco.notes.note.model.entitites.Note;
 import com.mirco.notes.auth.model.entities.SystemUser;
 import com.mirco.notes.label.model.exceptions.LabelNotFoundException;
 import com.mirco.notes.note.model.exceptions.NoteNotFoundException;
+import com.mirco.notes.note.model.exceptions.NoteNotOwnedBySystemUserException;
 import com.mirco.notes.note.model.exceptions.NoteWithLabelsWithNullIdException;
 import com.mirco.notes.note.model.repository.INoteRepository;
 import com.mirco.notes.label.service.ILabelService;
@@ -15,6 +16,7 @@ import com.mirco.notes.shared.model.exceptions.UserNotRegisteredException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -120,6 +122,36 @@ public class NoteServiceImpl implements INoteService {
         return iNoteRepository.save(noteFromDB);
     }
 
+    @Override
+    public Note getNoteIfOwnedByCurrentUser(Long noteId, UserDetails userDetails) {
+        SystemUser systemUserFromDB = getSystemUserByDetails(userDetails);
+        Note note = getNoteById(noteId);
+
+        if (!note.getSystemUser().getId().equals(systemUserFromDB.getId())) {
+            throw new NoteNotOwnedBySystemUserException("Note doesn't belong to the logged user");
+        }
+        return note;
+    }
+
+    @Override
+    public Note updateNoteIfOwnedByCurrentUser(Long noteId, UpdateNoteRequest request, UserDetails userDetails) {
+        Note note = getNoteIfOwnedByCurrentUser(noteId, userDetails);
+        return updateNote(note.getId(), request);
+    }
+
+    @Override
+    public Boolean deleteNoteIfOwnedByCurrentUser(Long noteId, UserDetails userDetails) {
+        Note note = getNoteIfOwnedByCurrentUser(noteId, userDetails);
+        iNoteRepository.delete(note);
+        return true;
+    }
+
+    @Override
+    public Note toggleArchiveStatusIfOwnedByCurrentUser(Long noteId, UserDetails userDetails) {
+        Note note = getNoteIfOwnedByCurrentUser(noteId, userDetails);
+        return toggleArchiveStatusById(note.getId());
+    }
+
     private void mergeNoteLabels(UpdateNoteRequest updateNoteRequest, Note noteFromDB) {
         final boolean notesFromBDHasLabels = noteFromDB.getLabels() != null && !noteFromDB.getLabels().isEmpty();
         final boolean requestHasLabels = updateNoteRequest.labels() != null && !updateNoteRequest.labels().isEmpty();
@@ -170,6 +202,10 @@ public class NoteServiceImpl implements INoteService {
             throw new UserNotRegisteredException();
         }
         return systemUser;
+    }
+
+    private SystemUser getSystemUserByDetails(UserDetails userDetails) {
+        return iSystemUserService.findSystemUserByEmail(userDetails.getUsername());
     }
 
 }

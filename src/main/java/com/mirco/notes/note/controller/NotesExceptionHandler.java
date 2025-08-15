@@ -1,19 +1,15 @@
 package com.mirco.notes.note.controller;
 
-import com.mirco.notes.label.model.exceptions.LabelNotFoundException;
 import com.mirco.notes.note.model.exceptions.NoteNotFoundException;
+import com.mirco.notes.note.model.exceptions.NoteNotOwnedBySystemUserException;
 import com.mirco.notes.note.model.exceptions.NoteWithLabelsWithNullIdException;
 import com.mirco.notes.shared.model.exceptions.UserNotRegisteredException;
-import org.springframework.validation.FieldError;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import com.mirco.notes.shared.model.response.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import java.util.HashMap;
 
 @ControllerAdvice
 public class NotesExceptionHandler {
@@ -63,5 +59,15 @@ public class NotesExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
     }
 
+    @ExceptionHandler(NoteNotOwnedBySystemUserException.class)
+    public ResponseEntity<StandardResponse<Void>> handleNoteOwnershipException(NoteNotOwnedBySystemUserException ex) {
+        StandardResponse<Void> response = StandardResponse.<Void>builder()
+                .statusCode(HttpStatus.FORBIDDEN.value())
+                .message(ex.getMessage())
+                .data(null)
+                .build();
+
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(response);
+    }
 
 }
