@@ -6,12 +6,10 @@ import com.mirco.notes.auth.model.response.TokenResponse;
 import com.mirco.notes.auth.services.auth.IAuthService;
 import com.mirco.notes.shared.model.response.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,7 +31,7 @@ public class AuthController {
         description = "Creates a new user and returns a json web token (JWT) for further requests"
     )
     @PostMapping("/register")
-    public ResponseEntity<StandardResponse<TokenResponse>> register(@RequestBody RegisterRequest registerRequest) {
+    public ResponseEntity<StandardResponse<TokenResponse>> register(@Validated  @RequestBody RegisterRequest registerRequest) {
         TokenResponse tokenResponse = iAuthService.register(registerRequest);
 
         StandardResponse<TokenResponse> registerResponse = StandardResponse
@@ -51,7 +49,7 @@ public class AuthController {
         description = "Authenticates a user and returns a json web token (JWT) for further requests"
     )
     @PostMapping("/login")
-    public ResponseEntity<StandardResponse> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<StandardResponse> login(@Validated @RequestBody LoginRequest loginRequest) {
         TokenResponse tokenResponse = iAuthService.auth(loginRequest);
 
         StandardResponse<TokenResponse> loginResponse = StandardResponse
