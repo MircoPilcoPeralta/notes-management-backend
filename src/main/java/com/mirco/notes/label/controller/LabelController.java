@@ -73,10 +73,7 @@ public class LabelController {
 
     @DeleteMapping("/{labelId}")
     public ResponseEntity<StandardResponse<Boolean>> deleteLabel(
-            @Validated
-            @Min(value = 1, message = "Label id must be a positive number")
             @PathVariable("labelId") Long labelId,
-            @Min(value = 1, message = "reassignToLabelId must be a positive number")
             @RequestParam(value = "reassignToLabelId", required = false) Long labelIdReassignTo
     ) {
         Boolean deletionResult = iLabelService.deleteLabelById(labelId, labelIdReassignTo);
