@@ -37,8 +37,9 @@ public interface ILabelService {
      * Method to delete a label by its id.
      *
      * @param labelId the ID of the label to be deleted
+     * @param labelIdReassignTo the id of the label to which notes from the deleted label will be reassigned
      * @return true if the label was successfully deleted, false otherwise
      */
-    Boolean deleteLabelById(Long labelId);
+    Boolean deleteLabelById(Long labelId, Long labelIdReassignTo);
 
 }

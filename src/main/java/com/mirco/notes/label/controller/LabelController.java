@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -46,7 +47,6 @@ public class LabelController {
                 .data(labelResponseList)
                 .build();
 
-
         return ResponseEntity.ok(response);
     }
 
@@ -75,9 +75,11 @@ public class LabelController {
     public ResponseEntity<StandardResponse<Boolean>> deleteLabel(
             @Validated
             @Min(value = 1, message = "Label id must be a positive number")
-            @PathVariable("labelId") Long labelId) {
-
-        Boolean deletionResult = iLabelService.deleteLabelById(labelId);
+            @PathVariable("labelId") Long labelId,
+            @Min(value = 1, message = "targetLabelId must be a positive number")
+            @RequestParam("reassignToLabelId") Long labelIdReassignTo
+    ) {
+        Boolean deletionResult = iLabelService.deleteLabelById(labelId, labelIdReassignTo);
 
         StandardResponse<Boolean> response = StandardResponse.<Boolean>builder()
                 .statusCode(HttpStatus.NO_CONTENT.value())
