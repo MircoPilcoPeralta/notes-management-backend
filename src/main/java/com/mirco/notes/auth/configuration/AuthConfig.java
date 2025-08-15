@@ -31,7 +31,7 @@ public class AuthConfig {
     public UserDetailsService userDetailsService() {
         return username -> {
             final SystemUser userEntity = iSystemUserRepository
-                    .findUserByEmail(username)
+                    .findSystemUserByEmail(username)
                     .orElseThrow(
                             () -> new UsernameNotFoundException("User not found")
                     );
