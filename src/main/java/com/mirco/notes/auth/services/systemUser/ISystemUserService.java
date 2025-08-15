@@ -11,4 +11,12 @@ public interface ISystemUserService {
      */
     SystemUser getSystemUserById(Long userId);
 
+    /**
+     * Retrieves a system user by his/her email.
+     *
+     * @param email of the user to retrieve.
+     * @return The user if found, or null otherwise.
+     */
+    SystemUser findSystemUserByEmail(String email);
+
 }
