@@ -24,7 +24,6 @@ public class SystemUserServiceImpl implements ISystemUserService {
 
     @Override
     public SystemUser findSystemUserByEmail(String email) {
-        //todo
         return getSystemUserByEmail(email);
     }
 

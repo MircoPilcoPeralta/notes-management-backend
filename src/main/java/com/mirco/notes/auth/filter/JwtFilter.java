@@ -69,8 +69,6 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         final UserDetails userDetails = userDetailsService.loadUserByUsername(email);
-
-        // todo validar que el email del jwt sea el mismo que el ingresado en el json del request
         request.getAttribute("email");
 
         final Optional<SystemUser> systemUserEntity = iSystemUserRepository.findSystemUserByEmail(email);

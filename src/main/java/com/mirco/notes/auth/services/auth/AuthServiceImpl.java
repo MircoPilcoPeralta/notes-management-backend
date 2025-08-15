@@ -62,7 +62,6 @@ public class AuthServiceImpl implements IAuthService {
     private SystemUser getUserByEmail(String email) {
         Optional<SystemUser> userFromDB = iSystemUserRepository.findSystemUserByEmail(email);
         if (userFromDB.isEmpty()) {
-            // todo que se muestre el error
             throw new UserNotRegisteredException("User not found");
         }
 
