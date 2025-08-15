@@ -4,6 +4,7 @@ import com.mirco.notes.note.model.Request.UpdateNoteRequest;
 import com.mirco.notes.note.model.dto.NoteFiltersDTO;
 import com.mirco.notes.note.model.entitites.Note;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.List;
@@ -22,10 +23,10 @@ public interface INoteService {
      *
      * @param title   The title of the note.
      * @param content The content of the note.
-     * @param userId  The ID of the user creating the note.
+     * @param userDetails The details of the user creating the note.
      * @return The created Note object.
      */
-    Note createNote(String title, String content, Long userId);
+    Note createNote(String title, String content, UserDetails userDetails);
 
     /**
      * Retrieves a specific note by its ID.
@@ -34,25 +35,6 @@ public interface INoteService {
      * @return The Note object found.
      */
     Note getNoteById(Long noteId);
-
-    /**
-     * Updates an existing note.
-     *
-     * @param noteId The ID of the note to update.
-     * @param updateNoteRequest The note with fields updated.
-     * @return The updated Note object.
-     */
-    Note updateNote(Long noteId, UpdateNoteRequest updateNoteRequest);
-
-
-    /**
-     * Deletes a note by its ID.
-     *
-     * @param noteId The ID of the note to delete.
-     * @return True if the note was successfully deleted, false otherwise.
-     */
-    Boolean deleteNote(Long noteId);
-
 
     /**
      * Method to obtain all notes paginated.
@@ -66,18 +48,10 @@ public interface INoteService {
      * Method to obtain all notes paginated belonging to a specific user.
      *
      * @param noteFiltersDTO filter to apply to the notes.
-     * @param userId id of the user.
+     * @param userDetails the details of the user whose notes are being retrieved.
      * @return a page of notes that match the criteria.
      */
-    Page<Note> getAllNotesPaginated(NoteFiltersDTO noteFiltersDTO, Long userId);
-
-    /**
-     * Method to toggle the archive status of a note by its id.
-     *
-     * @param noteId of the note to toggle.
-     * @return updated Note object with the new archive status.
-     */
-    Note toggleArchiveStatusById(Long noteId);
+    Page<Note> getAllNotesPaginated(NoteFiltersDTO noteFiltersDTO, UserDetails userDetails);
 
     /**
      * Method to check if a note is owned by the current user.

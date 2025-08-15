@@ -44,8 +44,8 @@ public class NoteServiceImpl implements INoteService {
     }
 
     @Override
-    public Note createNote(String title, String content, Long userId) {
-        final SystemUser systemUser = getSystemUserById(userId);
+    public Note createNote(String title, String content, UserDetails userDetails) {
+        final SystemUser systemUser = iSystemUserService.findSystemUserByEmail(userDetails.getUsername());
 
         final Note note = Note.builder()
                 .title(title)
@@ -70,8 +70,44 @@ public class NoteServiceImpl implements INoteService {
     }
 
     @Override
-    public Note updateNote(Long noteId, UpdateNoteRequest updateNoteRequest) {
-        Note noteFromDB = getNoteById(noteId);
+    public Page<Note> getAllNotesPaginated(NoteFiltersDTO noteFiltersDTO) {
+        Pageable pageable = PageRequest.of( noteFiltersDTO.page(), noteFiltersDTO.size());
+        return iNoteRepository.findAllByTitleLikeAndContentLikeAndLabels_IdIn(
+                noteFiltersDTO.title(),
+                noteFiltersDTO.content(),
+                noteFiltersDTO.labelIds(),
+                noteFiltersDTO.labelIds() == null ? 0 : noteFiltersDTO.labelIds().size(),
+                pageable);
+    }
+
+    @Override
+    public Page<Note> getAllNotesPaginated(NoteFiltersDTO noteFiltersDTO, UserDetails userDetails) {
+        final SystemUser systemUserFromDB = iSystemUserService.findSystemUserByEmail(userDetails.getUsername());
+
+        Pageable pageable = PageRequest.of( noteFiltersDTO.page(), noteFiltersDTO.size());
+        return iNoteRepository.findAllByTitleLikeAndContentLikeAndLabels_IdInAAndSystemUserIdEquals(
+                noteFiltersDTO.title(),
+                noteFiltersDTO.content(),
+                noteFiltersDTO.labelIds(),
+                noteFiltersDTO.labelIds() == null ? 0 : noteFiltersDTO.labelIds().size(),
+                systemUserFromDB.getId(),
+                pageable);
+    }
+
+    @Override
+    public Note getNoteIfOwnedByCurrentUser(Long noteId, UserDetails userDetails) {
+        SystemUser systemUserFromDB = iSystemUserService.findSystemUserByEmail(userDetails.getUsername());
+        Note note = getNoteById(noteId);
+
+        if (!note.getSystemUser().getId().equals(systemUserFromDB.getId())) {
+            throw new NoteNotOwnedBySystemUserException("Note doesn't belong to the logged user");
+        }
+        return note;
+    }
+
+    @Override
+    public Note updateNoteIfOwnedByCurrentUser(Long noteId, UpdateNoteRequest updateNoteRequest, UserDetails userDetails) {
+        Note noteFromDB = getNoteIfOwnedByCurrentUser(noteId, userDetails);
 
         noteFromDB.setTitle(updateNoteRequest.title());
         noteFromDB.setContent(updateNoteRequest.content());
@@ -86,60 +122,6 @@ public class NoteServiceImpl implements INoteService {
     }
 
     @Override
-    public Boolean deleteNote(Long noteId) {
-        Note noteFromDB = getNoteById(noteId);
-        iNoteRepository.delete(noteFromDB);
-        return true;
-    }
-
-    @Override
-    public Page<Note> getAllNotesPaginated(NoteFiltersDTO noteFiltersDTO) {
-        Pageable pageable = PageRequest.of( noteFiltersDTO.page(), noteFiltersDTO.size());
-        return iNoteRepository.findAllByTitleLikeAndContentLikeAndLabels_IdIn(
-                noteFiltersDTO.title(),
-                noteFiltersDTO.content(),
-                noteFiltersDTO.labelIds(),
-                noteFiltersDTO.labelIds() == null ? 0 : noteFiltersDTO.labelIds().size(),
-                pageable);
-    }
-
-    @Override
-    public Page<Note> getAllNotesPaginated(NoteFiltersDTO noteFiltersDTO, Long userId) {
-        Pageable pageable = PageRequest.of( noteFiltersDTO.page(), noteFiltersDTO.size());
-        return iNoteRepository.findAllByTitleLikeAndContentLikeAndLabels_IdInAAndSystemUserIdEquals(
-                noteFiltersDTO.title(),
-                noteFiltersDTO.content(),
-                noteFiltersDTO.labelIds(),
-                noteFiltersDTO.labelIds() == null ? 0 : noteFiltersDTO.labelIds().size(),
-                userId,
-                pageable);
-    }
-
-    @Override
-    public Note toggleArchiveStatusById(Long noteId) {
-        Note noteFromDB = getNoteById(noteId);
-        noteFromDB.setIsArchived(!noteFromDB.getIsArchived());
-        return iNoteRepository.save(noteFromDB);
-    }
-
-    @Override
-    public Note getNoteIfOwnedByCurrentUser(Long noteId, UserDetails userDetails) {
-        SystemUser systemUserFromDB = getSystemUserByDetails(userDetails);
-        Note note = getNoteById(noteId);
-
-        if (!note.getSystemUser().getId().equals(systemUserFromDB.getId())) {
-            throw new NoteNotOwnedBySystemUserException("Note doesn't belong to the logged user");
-        }
-        return note;
-    }
-
-    @Override
-    public Note updateNoteIfOwnedByCurrentUser(Long noteId, UpdateNoteRequest request, UserDetails userDetails) {
-        Note note = getNoteIfOwnedByCurrentUser(noteId, userDetails);
-        return updateNote(note.getId(), request);
-    }
-
-    @Override
     public Boolean deleteNoteIfOwnedByCurrentUser(Long noteId, UserDetails userDetails) {
         Note note = getNoteIfOwnedByCurrentUser(noteId, userDetails);
         iNoteRepository.delete(note);
@@ -148,8 +130,10 @@ public class NoteServiceImpl implements INoteService {
 
     @Override
     public Note toggleArchiveStatusIfOwnedByCurrentUser(Long noteId, UserDetails userDetails) {
-        Note note = getNoteIfOwnedByCurrentUser(noteId, userDetails);
-        return toggleArchiveStatusById(note.getId());
+        Note noteFromDB = getNoteIfOwnedByCurrentUser(noteId, userDetails);
+
+        noteFromDB.setIsArchived(!noteFromDB.getIsArchived());
+        return iNoteRepository.save(noteFromDB);
     }
 
     private void mergeNoteLabels(UpdateNoteRequest updateNoteRequest, Note noteFromDB) {
@@ -204,8 +188,6 @@ public class NoteServiceImpl implements INoteService {
         return systemUser;
     }
 
-    private SystemUser getSystemUserByDetails(UserDetails userDetails) {
-        return iSystemUserService.findSystemUserByEmail(userDetails.getUsername());
-    }
+
 
 }

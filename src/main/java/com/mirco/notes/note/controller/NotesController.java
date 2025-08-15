@@ -67,9 +67,7 @@ public class NotesController {
             @ModelAttribute NoteFiltersDTO noteFiltersDTO,
             @AuthenticationPrincipal UserDetails userDetails
     ) {
-        SystemUser systemUserFromDB = getSystemUserByDetails(userDetails);
-
-        final Page<Note> notesPaginated = iNoteService.getAllNotesPaginated(noteFiltersDTO, systemUserFromDB.getId());
+        final Page<Note> notesPaginated = iNoteService.getAllNotesPaginated(noteFiltersDTO, userDetails);
 
         final Page<NoteResponse> noteResponses = generateNotesPaginatedResponse(notesPaginated);
 
@@ -88,12 +86,10 @@ public class NotesController {
         @RequestBody final CreateNoteRequest createNoteRequest,
         @AuthenticationPrincipal UserDetails userDetails
     ) {
-        SystemUser systemUserFromDB = getSystemUserByDetails(userDetails);
-
         final Note createdNote = iNoteService.createNote(
                 createNoteRequest.title(),
                 createNoteRequest.content(),
-                systemUserFromDB.getId());
+                userDetails);
 
         final NoteResponse noteResponse = generateNoteResponse(createdNote);
 
@@ -208,10 +204,6 @@ public class NotesController {
 
     private Page<NoteResponse> generateNotesPaginatedResponse(Page<Note> notesPaginated) {
         return notesPaginated.map(this::generateNoteResponse);
-    }
-
-    private SystemUser getSystemUserByDetails(UserDetails userDetails) {
-        return iSystemUserService.findSystemUserByEmail(userDetails.getUsername());
     }
 
 }
