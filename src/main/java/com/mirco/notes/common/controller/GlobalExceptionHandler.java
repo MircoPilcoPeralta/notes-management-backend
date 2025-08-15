@@ -1,6 +1,6 @@
-package com.mirco.notes.shared.controller;
+package com.mirco.notes.common.controller;
 
-import com.mirco.notes.shared.model.response.StandardResponse;
+import com.mirco.notes.common.model.response.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

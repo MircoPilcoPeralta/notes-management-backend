@@ -1,6 +1,5 @@
 package com.mirco.notes.note.controller;
 
-import com.mirco.notes.auth.model.entities.SystemUser;
 import com.mirco.notes.auth.services.systemUser.ISystemUserService;
 import com.mirco.notes.note.model.Request.CreateNoteRequest;
 import com.mirco.notes.note.model.Request.UpdateNoteRequest;
@@ -9,12 +8,9 @@ import com.mirco.notes.note.model.Response.NoteResponse;
 import com.mirco.notes.note.model.dto.NoteFiltersDTO;
 import com.mirco.notes.note.model.entitites.Note;
 import com.mirco.notes.note.service.INoteService;
-import com.mirco.notes.shared.model.response.StandardResponse;
+import com.mirco.notes.common.model.response.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import org.springframework.data.domain.Page;

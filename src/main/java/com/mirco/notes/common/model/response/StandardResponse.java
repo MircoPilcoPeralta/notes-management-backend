@@ -1,4 +1,4 @@
-package com.mirco.notes.shared.model.response;
+package com.mirco.notes.common.model.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

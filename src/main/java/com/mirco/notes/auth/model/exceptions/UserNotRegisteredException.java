@@ -1,4 +1,4 @@
-package com.mirco.notes.shared.model.exceptions;
+package com.mirco.notes.auth.model.exceptions;
 
 public class UserNotRegisteredException extends RuntimeException {
     private static final String DEFAULT_MESSAGE = "User is not registered.";
