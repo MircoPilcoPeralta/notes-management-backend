@@ -13,7 +13,7 @@ services:
     container_name: notes_db
 
   app:
-    build: .
+    image: mircoestefanopilcoperalta/notes_app:snapshot-0.0.1-candidate
     container_name: notes_app
     restart: always
     ports:
