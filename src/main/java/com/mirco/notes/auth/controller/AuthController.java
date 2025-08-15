@@ -5,6 +5,11 @@ import com.mirco.notes.auth.model.request.RegisterRequest;
 import com.mirco.notes.auth.model.response.TokenResponse;
 import com.mirco.notes.auth.services.auth.IAuthService;
 import com.mirco.notes.shared.model.response.StandardResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication", description = "Endpoints for user registration and login")
 public class AuthController {
 
     private final IAuthService iAuthService;
@@ -22,6 +28,10 @@ public class AuthController {
         this.iAuthService = iAuthService;
     }
 
+    @Operation(
+        summary = "Register a new user",
+        description = "Creates a new user and returns a json web token (JWT) for further requests"
+    )
     @PostMapping("/register")
     public ResponseEntity<StandardResponse<TokenResponse>> register(@RequestBody RegisterRequest registerRequest) {
         TokenResponse tokenResponse = iAuthService.register(registerRequest);
@@ -36,6 +46,10 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(registerResponse);
     }
 
+    @Operation(
+        summary = "User login",
+        description = "Authenticates a user and returns a json web token (JWT) for further requests"
+    )
     @PostMapping("/login")
     public ResponseEntity<StandardResponse> login(@RequestBody LoginRequest loginRequest) {
         TokenResponse tokenResponse = iAuthService.auth(loginRequest);
