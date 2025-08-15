@@ -1,7 +1,9 @@
 package com.mirco.notes.label.service;
 
 import com.mirco.notes.label.model.entities.Label;
+import com.mirco.notes.label.model.exceptions.LabelNotOwnedBySystemUserException;
 import com.mirco.notes.label.model.request.CreateLabelRequest;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Set;
 
@@ -23,23 +25,23 @@ public interface ILabelService {
      */
     Set<Label> getAllLabelsByUserId(Long userId);
 
-
     /**
-     * Method to create a new label.
+     * Method to retrieve a system user by their UserDetails.
      *
-     * @param createLabelRequest the request containing label creation details
-     * @return the created label
+     * @param userDetails the UserDetails of the user
+     * @return the SystemUser associated with the UserDetails
      */
-    Label createLabel(CreateLabelRequest createLabelRequest);
-
+    Label createLabelForCurrentUser(CreateLabelRequest request, UserDetails userDetails);
 
     /**
-     * Method to delete a label by its id.
+     * Method to delete a label if it is owned by the current user.
      *
      * @param labelId the ID of the label to be deleted
-     * @param labelIdReassignTo the id of the label to which notes from the deleted label will be reassigned
+     * @param labelIdReassignTo the ID of the label to which notes from the deleted label will be reassigned
+     * @param userDetails the UserDetails of the current user
      * @return true if the label was successfully deleted, false otherwise
+     * @throws LabelNotOwnedBySystemUserException if the label is not owned by the current user
      */
-    Boolean deleteLabelById(Long labelId, Long labelIdReassignTo);
+    Boolean deleteLabelIfOwnedByCurrentUser(Long labelId, Long labelIdReassignTo, UserDetails userDetails);
 
 }

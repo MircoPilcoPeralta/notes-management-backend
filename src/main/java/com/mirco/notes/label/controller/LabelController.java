@@ -1,14 +1,17 @@
 package com.mirco.notes.label.controller;
 
 
+import com.mirco.notes.auth.model.entities.SystemUser;
+import com.mirco.notes.auth.services.systemUser.ISystemUserService;
 import com.mirco.notes.label.model.entities.Label;
 import com.mirco.notes.label.model.request.CreateLabelRequest;
 import com.mirco.notes.label.model.response.LabelResponse;
 import com.mirco.notes.label.service.ILabelService;
 import com.mirco.notes.shared.model.response.StandardResponse;
-import jakarta.validation.constraints.Min;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,18 +29,19 @@ import java.util.Set;
 @RequestMapping("/api/labels")
 public class LabelController {
     private final ILabelService iLabelService;
+    private final ISystemUserService iSystemUserService;
 
-    public LabelController(ILabelService iLabelService) {
+    public LabelController(ILabelService iLabelService, ISystemUserService iSystemUserService) {
         this.iLabelService = iLabelService;
+        this.iSystemUserService = iSystemUserService;
     }
 
-    @GetMapping("/users/{userId}")
-    public ResponseEntity<StandardResponse<List<LabelResponse>>> getAllLabelsFromUserByUserId(
-            @Validated
-            @Min(value = 1, message = "User ID must be a positive number")
-            @PathVariable("userId") Long userId) {
-
-        Set<Label> labelsFromUser = iLabelService.getAllLabelsByUserId(userId);
+    @GetMapping()
+    public ResponseEntity<StandardResponse<List<LabelResponse>>> getAllLabelsFromLoggedUser(
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        SystemUser systemUserFromDB = iSystemUserService.findSystemUserByEmail(userDetails.getUsername());
+        Set<Label> labelsFromUser = iLabelService.getAllLabelsByUserId(systemUserFromDB.getId());
 
         List<LabelResponse> labelResponseList = generateLabelListResponse(labelsFromUser);
 
@@ -55,10 +59,10 @@ public class LabelController {
     public ResponseEntity<StandardResponse<LabelResponse>> createLabel(
             @Validated
             @RequestBody
-            CreateLabelRequest createLabelRequest) {
-
-        Label createdLabel = iLabelService.createLabel(createLabelRequest);
-
+            CreateLabelRequest createLabelRequest,
+            @AuthenticationPrincipal UserDetails userDetails
+    ) {
+        Label createdLabel = iLabelService.createLabelForCurrentUser(createLabelRequest, userDetails);
         LabelResponse labelResponse = generateLabelResponse(createdLabel);
 
         StandardResponse<LabelResponse> response = StandardResponse.<LabelResponse>builder()
@@ -74,12 +78,13 @@ public class LabelController {
     @DeleteMapping("/{labelId}")
     public ResponseEntity<StandardResponse<Boolean>> deleteLabelById(
             @PathVariable("labelId") Long labelId,
-            @RequestParam(value = "reassignToLabelId", required = false) Long labelIdReassignTo
+            @RequestParam(value = "reassignToLabelId", required = false) Long labelIdReassignTo,
+            @AuthenticationPrincipal UserDetails userDetails
     ) {
-        Boolean deletionResult = iLabelService.deleteLabelById(labelId, labelIdReassignTo);
+        Boolean deletionResult = iLabelService.deleteLabelIfOwnedByCurrentUser(labelId, labelIdReassignTo, userDetails);
 
         StandardResponse<Boolean> response = StandardResponse.<Boolean>builder()
-                .statusCode(HttpStatus.NO_CONTENT.value())
+                .statusCode(HttpStatus.OK.value())
                 .message("Label deleted successfully")
                 .data(deletionResult)
                 .build();
@@ -101,6 +106,5 @@ public class LabelController {
                 LabelController::generateLabelResponse
         ).toList();
     }
-
 
 }

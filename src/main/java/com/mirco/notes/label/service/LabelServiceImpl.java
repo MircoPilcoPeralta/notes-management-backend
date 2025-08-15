@@ -7,7 +7,9 @@ import com.mirco.notes.label.model.request.CreateLabelRequest;
 import com.mirco.notes.auth.model.entities.SystemUser;
 import com.mirco.notes.auth.services.systemUser.ISystemUserService;
 import com.mirco.notes.note.model.entitites.Note;
+import com.mirco.notes.note.model.exceptions.NoteNotOwnedBySystemUserException;
 import com.mirco.notes.shared.model.exceptions.UserNotRegisteredException;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -43,8 +45,9 @@ public class LabelServiceImpl implements ILabelService {
     }
 
     @Override
-    public Label createLabel(CreateLabelRequest createLabelRequest) {
-        final SystemUser systemUser = getSystemUserById(createLabelRequest.systemUserId());
+    public Label createLabelForCurrentUser(CreateLabelRequest createLabelRequest, UserDetails userDetails) {
+        SystemUser systemUser = iSystemUserService.findSystemUserByEmail(userDetails.getUsername());
+
         final Label newLabel = Label.builder()
                 .name(createLabelRequest.name())
                 .systemUser(systemUser)
@@ -56,8 +59,8 @@ public class LabelServiceImpl implements ILabelService {
     }
 
     @Override
-    public Boolean deleteLabelById(Long labelId, Long labelIdReassignTo) {
-        Label labelFromDB = getLabelById(labelId);
+    public Boolean deleteLabelIfOwnedByCurrentUser(Long labelId, Long labelIdReassignTo, UserDetails userDetails) {
+        Label labelFromDB = getLabelIfOwnedByCurrentUser(labelId, userDetails);
         Label targetLabel;
 
         if (labelIdReassignTo != null) {
@@ -77,6 +80,18 @@ public class LabelServiceImpl implements ILabelService {
         iLabelRepository.delete(labelFromDB);
         return true;
     }
+
+    private Label getLabelIfOwnedByCurrentUser(Long labelId, UserDetails userDetails) {
+        SystemUser systemUserFromDB = iSystemUserService.findSystemUserByEmail(userDetails.getUsername());
+        Label label = getLabelById(labelId);
+
+        if (!label.getSystemUser().getId().equals(systemUserFromDB.getId())) {
+            throw new NoteNotOwnedBySystemUserException("Label doesn't belong to the logged user");
+        }
+
+        return label;
+    }
+
 
     private void updateNoteLabels(Note note, Long labelIdToRemove, Label labelToAdd) {
         Set<Label> updatedLabels = note.getLabels().stream()
@@ -98,4 +113,5 @@ public class LabelServiceImpl implements ILabelService {
         }
         return systemUser;
     }
+
 }
