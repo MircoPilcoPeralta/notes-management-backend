@@ -72,7 +72,7 @@ public class LabelController {
 
 
     @DeleteMapping("/{labelId}")
-    public ResponseEntity<StandardResponse<Boolean>> deleteLabel(
+    public ResponseEntity<StandardResponse<Boolean>> deleteLabelById(
             @PathVariable("labelId") Long labelId,
             @RequestParam(value = "reassignToLabelId", required = false) Long labelIdReassignTo
     ) {
