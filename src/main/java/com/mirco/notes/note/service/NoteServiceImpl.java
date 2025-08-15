@@ -10,7 +10,7 @@ import com.mirco.notes.note.model.exceptions.NoteNotFoundException;
 import com.mirco.notes.note.model.exceptions.NoteWithLabelsWithNullIdException;
 import com.mirco.notes.note.model.repository.INoteRepository;
 import com.mirco.notes.label.service.ILabelService;
-import com.mirco.notes.auth.services.ISystemUserService;
+import com.mirco.notes.auth.services.systemUser.ISystemUserService;
 import com.mirco.notes.shared.model.exceptions.UserNotRegisteredException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

@@ -1,4 +1,4 @@
-package com.mirco.notes.auth.services;
+package com.mirco.notes.auth.services.systemUser;
 
 import com.mirco.notes.auth.model.entities.SystemUser;
 

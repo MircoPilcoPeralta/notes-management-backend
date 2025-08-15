@@ -5,7 +5,7 @@ import com.mirco.notes.label.model.exceptions.LabelNotFoundException;
 import com.mirco.notes.label.model.repository.ILabelRepository;
 import com.mirco.notes.label.model.request.CreateLabelRequest;
 import com.mirco.notes.auth.model.entities.SystemUser;
-import com.mirco.notes.auth.services.ISystemUserService;
+import com.mirco.notes.auth.services.systemUser.ISystemUserService;
 import com.mirco.notes.shared.model.exceptions.UserNotRegisteredException;
 import org.springframework.stereotype.Service;
 
