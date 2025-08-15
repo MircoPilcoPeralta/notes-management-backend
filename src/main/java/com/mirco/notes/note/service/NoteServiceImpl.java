@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class NoteServiceImpl implements INoteService {
@@ -114,6 +115,21 @@ public class NoteServiceImpl implements INoteService {
 
         if(updateNoteRequest.isArchived() != null && updateNoteRequest.isArchived() != noteFromDB.getIsArchived()) {
             noteFromDB.setIsArchived(updateNoteRequest.isArchived());
+        }
+
+        final SystemUser systemUser = iSystemUserService.findSystemUserByEmail(userDetails.getUsername());
+        Set<Long> labelIdsFromRequest = updateNoteRequest.labels().stream().map(label -> label.getId()).collect(Collectors.toSet());
+        Set<Long> labelIdsFromUser = systemUser.getLabels().stream().map(label -> label.getId()).collect(Collectors.toSet());
+
+        if(labelIdsFromRequest != null && !labelIdsFromRequest.isEmpty()
+            && labelIdsFromUser != null && !labelIdsFromUser.isEmpty()) {
+            labelIdsFromRequest.stream().forEach(
+                    labelId -> {
+                        if(!labelIdsFromUser.contains(labelId)) {
+                            throw new NoteNotOwnedBySystemUserException("Label with ID " + labelId + " does not belong to the user.");
+                        }
+                    }
+            );
         }
 
         mergeNoteLabels(updateNoteRequest, noteFromDB);
