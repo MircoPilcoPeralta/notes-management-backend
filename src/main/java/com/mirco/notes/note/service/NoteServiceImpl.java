@@ -113,6 +113,13 @@ public class NoteServiceImpl implements INoteService {
                 pageable);
     }
 
+    @Override
+    public Note toggleArchiveStatusById(Long noteId) {
+        Note noteFromDB = getNoteById(noteId);
+        noteFromDB.setIsArchived(!noteFromDB.getIsArchived());
+        return iNoteRepository.save(noteFromDB);
+    }
+
     private void mergeNoteLabels(UpdateNoteRequest updateNoteRequest, Note noteFromDB) {
         final boolean notesFromBDHasLabels = noteFromDB.getLabels() != null && !noteFromDB.getLabels().isEmpty();
         final boolean requestHasLabels = updateNoteRequest.labels() != null && !updateNoteRequest.labels().isEmpty();

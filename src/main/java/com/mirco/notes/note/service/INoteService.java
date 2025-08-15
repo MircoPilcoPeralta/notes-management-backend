@@ -70,4 +70,11 @@ public interface INoteService {
      */
     Page<Note> getAllNotesPaginated(NoteFiltersDTO noteFiltersDTO, Long userId);
 
+    /**
+     * Method to toggle the archive status of a note by its id.
+     *
+     * @param noteId of the note to toggle.
+     * @return updated Note object with the new archive status.
+     */
+    Note toggleArchiveStatusById(Long noteId);
 }

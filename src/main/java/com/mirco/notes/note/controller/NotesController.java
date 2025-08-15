@@ -16,6 +16,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -164,6 +165,24 @@ public class NotesController {
 
         return ResponseEntity.status(HttpStatus.OK).body(standardResponse);
     }
+
+    @PatchMapping("/{noteId}/toggle-archive")
+    public ResponseEntity<StandardResponse<NoteResponse>> toggleArchiveStatus(
+            @PathVariable("noteId") final Long noteId) {
+
+        final Note updatedNote = iNoteService.toggleArchiveStatusById(noteId);
+
+        final NoteResponse noteResponse = generateNoteResponse(updatedNote);
+
+        final StandardResponse<NoteResponse> standardResponse = StandardResponse.<NoteResponse>builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("Note archive status toggled successfully")
+                .data(noteResponse)
+                .build();
+
+        return ResponseEntity.ok(standardResponse);
+    }
+
 
 
     private List<LabelResponse> extractLabelsFromNote(final Note note) {
