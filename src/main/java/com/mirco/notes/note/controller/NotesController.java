@@ -10,6 +10,12 @@ import com.mirco.notes.note.model.dto.NoteFiltersDTO;
 import com.mirco.notes.note.model.entitites.Note;
 import com.mirco.notes.note.service.INoteService;
 import com.mirco.notes.shared.model.response.StandardResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Min;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -32,6 +38,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/notes")
+@Tag(name = "Notes", description = "Endpoints for managing notes")
 public class NotesController {
 
     private final INoteService iNoteService;
@@ -42,6 +49,10 @@ public class NotesController {
         this.iSystemUserService = iSystemUserService;
     }
 
+    @Operation(
+        summary = "Get all created notes paginated",
+        description = "Retrieves all notes in the system, paginated, with optional filters."
+    )
     @GetMapping("/all")
     public ResponseEntity<StandardResponse<Page<NoteResponse>>> getAllNotesPaginated(
             @Validated
@@ -61,6 +72,10 @@ public class NotesController {
         return ResponseEntity.ok(standardResponse);
     }
 
+    @Operation(
+        summary = "Get all notes paginated from the authenticated user",
+        description = "Retrieves all notes owned by the authenticated user, paginated, with optional filters."
+    )
     @GetMapping()
     public ResponseEntity<StandardResponse<Page<NoteResponse>>> getAllUserNotesPaginated(
             @Validated
@@ -80,6 +95,10 @@ public class NotesController {
         return ResponseEntity.ok(standardResponse);
     }
 
+    @Operation(
+        summary = "Create a new note",
+        description = "Creates a new note for the authenticated user."
+    )
     @PostMapping
     public ResponseEntity<StandardResponse<NoteResponse>> createNote(
         @Validated
@@ -102,6 +121,13 @@ public class NotesController {
         return ResponseEntity.status(HttpStatus.CREATED).body(standardResponse);
     }
 
+    @Operation(
+        summary = "Get a note by ID",
+        description = "Retrieves a note owned by the authenticated user by its id.",
+        parameters = {
+            @Parameter(name = "noteId", description = "id of the note to retrieve", required = true)
+        }
+    )
     @GetMapping("/{noteId}")
     public ResponseEntity<StandardResponse<NoteResponse>> getNoteById(
             @Validated
@@ -122,6 +148,13 @@ public class NotesController {
         return ResponseEntity.ok(standardResponse);
     }
 
+    @Operation(
+        summary = "Update a note",
+        description = "Updates the details of an existing note owned by the authenticated user.",
+        parameters = {
+            @Parameter(name = "noteId", description = "id of the note to update", required = true)
+        }
+    )
     @PutMapping("/{noteId}")
     public ResponseEntity<StandardResponse<NoteResponse>> updateNote(
             @Min(value = 1, message = "note ID must be a positive number")
@@ -143,6 +176,13 @@ public class NotesController {
         return ResponseEntity.ok(standardResponse);
     }
 
+    @Operation(
+        summary = "Delete a note",
+        description = "Deletes a note owned by the authenticated user.",
+        parameters = {
+            @Parameter(name = "noteId", description = "id of the note to delete", required = true)
+        }
+    )
     @DeleteMapping("/{noteId}")
     public ResponseEntity<StandardResponse<Boolean>> deleteNote(
             @Min(value = 1, message = "note ID must be a positive number")
@@ -160,6 +200,13 @@ public class NotesController {
         return ResponseEntity.status(HttpStatus.OK).body(standardResponse);
     }
 
+    @Operation(
+        summary = "Toggle archive status",
+        description = "Toggles the archive status of a note owned by the authenticated user.",
+        parameters = {
+            @Parameter(name = "noteId", description = "id of the note to toggle archive status", required = true)
+        }
+    )
     @PatchMapping("/{noteId}/toggle-archive")
     public ResponseEntity<StandardResponse<NoteResponse>> toggleArchiveStatus(
             @PathVariable("noteId") final Long noteId,
