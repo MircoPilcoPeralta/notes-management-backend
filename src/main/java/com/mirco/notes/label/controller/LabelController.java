@@ -8,6 +8,12 @@ import com.mirco.notes.label.model.request.CreateLabelRequest;
 import com.mirco.notes.label.model.response.LabelResponse;
 import com.mirco.notes.label.service.ILabelService;
 import com.mirco.notes.shared.model.response.StandardResponse;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -27,6 +33,7 @@ import java.util.Set;
 
 @RestController
 @RequestMapping("/api/labels")
+@Tag(name = "Labels", description = "Endpoints to manage  labels")
 public class LabelController {
     private final ILabelService iLabelService;
     private final ISystemUserService iSystemUserService;
@@ -36,6 +43,10 @@ public class LabelController {
         this.iSystemUserService = iSystemUserService;
     }
 
+    @Operation(
+        summary = "Get all labels from logged-in user",
+        description = "Retrieves all labels associated with the authenticated user."
+    )
     @GetMapping()
     public ResponseEntity<StandardResponse<List<LabelResponse>>> getAllLabelsFromLoggedUser(
             @AuthenticationPrincipal UserDetails userDetails
@@ -54,7 +65,10 @@ public class LabelController {
         return ResponseEntity.ok(response);
     }
 
-
+    @Operation(
+        summary = "Create a new label",
+        description = "Creates a new label for the authenticated user."
+    )
     @PostMapping()
     public ResponseEntity<StandardResponse<LabelResponse>> createLabel(
             @Validated
@@ -76,6 +90,14 @@ public class LabelController {
 
 
     @DeleteMapping("/{labelId}")
+    @Operation(
+        summary = "Delete a label by id",
+        description = "Deletes a label owned by the authenticated user. Optionally, you can reassign associated notes to another label.",
+        parameters = {
+            @Parameter(name = "labelId", description = "The id of the label to delete", required = true),
+            @Parameter(name = "reassignToLabelId", description = "Optional id of another label to reassign notes to")
+        }
+    )
     public ResponseEntity<StandardResponse<Boolean>> deleteLabelById(
             @PathVariable("labelId") Long labelId,
             @RequestParam(value = "reassignToLabelId", required = false) Long labelIdReassignTo,
