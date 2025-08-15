@@ -185,6 +185,7 @@ public class NotesController {
     )
     @DeleteMapping("/{noteId}")
     public ResponseEntity<StandardResponse<Boolean>> deleteNote(
+            @Validated
             @Min(value = 1, message = "note ID must be a positive number")
             @PathVariable("noteId") final Long noteId,
             @AuthenticationPrincipal UserDetails userDetails

@@ -9,6 +9,7 @@ public record CreateNoteRequest(
     @Size(max = 200, message = "Title must not exceed 200 characters")
     String title,
     @NotNull(message = "Content is required")
+    @Size(max = 300, message = "Title must not exceed 300 characters")
     String content
 ) {
 }
