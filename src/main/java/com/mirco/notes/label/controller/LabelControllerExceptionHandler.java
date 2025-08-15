@@ -2,7 +2,7 @@ package com.mirco.notes.label.controller;
 
 import com.mirco.notes.label.model.exceptions.LabelNotFoundException;
 import com.mirco.notes.label.model.exceptions.LabelNotOwnedBySystemUserException;
-import com.mirco.notes.shared.model.response.StandardResponse;
+import com.mirco.notes.common.model.response.StandardResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

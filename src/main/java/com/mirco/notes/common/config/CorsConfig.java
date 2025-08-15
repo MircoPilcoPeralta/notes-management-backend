@@ -1,4 +1,4 @@
-package com.mirco.notes.shared.config;
+package com.mirco.notes.common.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

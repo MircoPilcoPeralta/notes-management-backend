@@ -4,7 +4,7 @@ import com.mirco.notes.auth.model.request.LoginRequest;
 import com.mirco.notes.auth.model.request.RegisterRequest;
 import com.mirco.notes.auth.model.response.TokenResponse;
 import com.mirco.notes.auth.services.auth.IAuthService;
-import com.mirco.notes.shared.model.response.StandardResponse;
+import com.mirco.notes.common.model.response.StandardResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;

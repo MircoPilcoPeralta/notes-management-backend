@@ -1,12 +1,13 @@
 package com.mirco.notes.auth.services.auth;
 
 import com.mirco.notes.auth.model.entities.SystemUser;
+import com.mirco.notes.auth.model.exceptions.RepeatedEmailException;
 import com.mirco.notes.auth.model.repository.ISystemUserRepository;
 import com.mirco.notes.auth.model.request.LoginRequest;
 import com.mirco.notes.auth.model.request.RegisterRequest;
 import com.mirco.notes.auth.model.response.TokenResponse;
 import com.mirco.notes.auth.services.jwt.IJwtService;
-import com.mirco.notes.shared.model.exceptions.UserNotRegisteredException;
+import com.mirco.notes.auth.model.exceptions.UserNotRegisteredException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -34,6 +35,11 @@ public class AuthServiceImpl implements IAuthService {
 
     @Override
     public TokenResponse register(RegisterRequest registerRequest) {
+        Optional<SystemUser> userFromDB = iSystemUserRepository.findSystemUserByEmail(registerRequest.email());
+        if (userFromDB.isPresent()) {
+            throw new RepeatedEmailException("Email already in use");
+        }
+
         SystemUser system = SystemUser.builder()
                 .email(registerRequest.email())
                 .fullName(registerRequest.fullName())

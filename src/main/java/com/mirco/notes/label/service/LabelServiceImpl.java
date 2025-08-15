@@ -8,7 +8,7 @@ import com.mirco.notes.auth.model.entities.SystemUser;
 import com.mirco.notes.auth.services.systemUser.ISystemUserService;
 import com.mirco.notes.note.model.entitites.Note;
 import com.mirco.notes.note.model.exceptions.NoteNotOwnedBySystemUserException;
-import com.mirco.notes.shared.model.exceptions.UserNotRegisteredException;
+import com.mirco.notes.auth.model.exceptions.UserNotRegisteredException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
